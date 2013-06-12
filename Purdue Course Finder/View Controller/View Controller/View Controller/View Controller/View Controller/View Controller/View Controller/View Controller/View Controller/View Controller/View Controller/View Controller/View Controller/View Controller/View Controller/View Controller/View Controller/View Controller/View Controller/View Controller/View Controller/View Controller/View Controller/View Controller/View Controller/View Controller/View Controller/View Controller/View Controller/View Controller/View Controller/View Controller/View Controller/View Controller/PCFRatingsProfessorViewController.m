@@ -1,0 +1,481 @@
+//
+//  PCFRatingsProfessorViewController.m
+//  Purdue Course Sniper
+//
+//  Created by Kamran Pirwani on 12/24/12.
+//  Copyright (c) 2012 Kamran Pirwani. All rights reserved.
+//
+
+#import "PCFRatingsProfessorViewController.h"
+#import "PCFAppDelegate.h"
+#import "PCFCustomReviewCell.h"
+#import "PCFCustomNumberReviewsCell.h"
+#import "PCFCustomProfessorCommentCell.h"
+#import "PCFRateModel.h"
+#import "PCFLeaveProfessorRatingViewController.h"
+#import <QuartzCore/QuartzCore.h>
+#import "PCFInAppPurchases.h"
+#import "PCFMainScreenViewController.h"
+#import "AdWhirlView.h"
+#import "PCFFontFactory.h"
+#import "PCFAnimationModel.h"
+
+@interface PCFRatingsProfessorViewController ()
+
+@end
+
+extern NSOutputStream *outputStream;
+extern BOOL initializedSocket;
+extern UIColor *customBlue;
+extern AdWhirlView *adView;
+
+#define TABLEVIEW_TWO_HEIGHT self.view.bounds.size.height
+@implementation PCFRatingsProfessorViewController
+{
+    BOOL isLoading;
+    BOOL isLoadingComments;
+    NSNumber *totalHelpfulness;
+    NSNumber *totalClarity;
+    NSNumber *totalEasiness;
+    NSNumber *totalInterestLevel;
+    NSNumber *totalTextbookUse;
+    NSNumber *totalOverall;
+    NSNumber *numReviews;
+    NSMutableArray *reviews;
+}
+@synthesize tableViewOne,activityIndicator,professorName, tableViewTwo;
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"SubmitReview"]) {
+        UINavigationController *navController = segue.destinationViewController;
+        PCFLeaveProfessorRatingViewController *viewController = navController.childViewControllers.lastObject;
+        [viewController setProfName:professorName];
+    }
+}
+-(void)popViewController
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+-(void)setupBackButton
+{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setFrame:CGRectMake(0, 0, 30, 30)];
+    [button setImage:[UIImage imageNamed:@"arrow_20x20.png"] forState:UIControlStateNormal];
+    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    [button addTarget:self
+               action:@selector(popViewController)
+     forControlEvents:UIControlEventTouchUpInside];
+    
+    self.navigationItem.leftBarButtonItem = barButtonItem;
+    
+}
+
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self setupBackButton];
+    [self loadReviews];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleResponse:) name:@"ServerResponseReceived" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleComments:) name:@"ServerCommentsReceived" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadReviews:) name:@"ReloadReviews" object:nil];
+    [self.navigationItem setTitle:professorName];
+    isLoading = YES;
+    isLoadingComments = YES;
+    tableViewTwo = [[UITableView alloc] initWithFrame:CGRectMake(0, 10, 320, TABLEVIEW_TWO_HEIGHT) style:UITableViewStyleGrouped];
+    [tableViewTwo setSectionFooterHeight:0.0f];
+    [tableViewTwo setDataSource:self];
+    [tableViewTwo setDelegate:self];
+    [tableViewTwo setTag:2];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, 320, 30)];
+    [label setTextColor:[UIColor whiteColor]];
+    [label setTextAlignment:NSTextAlignmentCenter];
+    [label setFont:[PCFFontFactory droidSansFontWithSize:22]];
+    [label setText:@"User Reviews"];
+    [label setBackgroundColor:[UIColor clearColor]];
+    [tableViewTwo setTableHeaderView:label];
+    [tableViewTwo setSectionFooterHeight:.01f];
+    [tableViewTwo setSectionHeaderHeight:.01f];
+    [tableViewTwo setAllowsSelection:NO];
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.tableViewOne.frame];
+    [imgView setImage:[UIImage imageNamed:@"background_full.png"]];
+    [self.tableViewOne setBackgroundView:imgView];
+    imgView = [[UIImageView alloc] initWithFrame:self.tableViewTwo.frame];
+    [imgView setImage:[UIImage imageNamed:@"background_full.png"]];
+    [self.tableViewTwo setBackgroundView:imgView];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.tableViewOne reloadData];
+}
+
+-(void)reloadReviews:(NSNotification *)notification
+{
+    isLoading = YES;
+    isLoadingComments = YES;
+    reviews = nil;
+    [self loadReviews];
+    [self.tableViewOne setTableFooterView:nil];
+    [self.tableViewOne reloadData];
+}
+-(void)handleResponse:(NSNotification *)notification
+{
+   NSDictionary *dictionary = notification.object;
+    totalHelpfulness = [dictionary objectForKey:@"helpfulness"];
+    totalClarity = [dictionary objectForKey:@"clarity"];
+    totalEasiness = [dictionary objectForKey:@"easiness"];
+    totalInterestLevel = [dictionary objectForKey:@"interestLevel"];
+    totalTextbookUse = [dictionary objectForKey:@"textbookUse"];
+    totalOverall = [dictionary objectForKey:@"overall"];
+    numReviews = [dictionary objectForKey:@"reviews"];
+    isLoading = NO;
+    [self.activityIndicator stopAnimating];
+    [self.tableViewOne reloadData];
+    [self loadComments];
+}
+
+-(void)handleComments:(NSNotification *)notification
+{
+    NSDictionary *feedback = notification.object;
+    NSNumber *error = [feedback objectForKey:@"error"];
+    NSArray *array = [feedback objectForKey:@"data"];
+    if (error.integerValue == 1) {
+        reviews = nil;
+        isLoadingComments = NO;
+        [self.tableViewOne reloadData];
+        return;
+    }
+    for (int i = 0; i < array.count; i++) {
+        NSDictionary *results = [array objectAtIndex:i];
+        NSString *name, *date, *message, *course, *term;
+        NSNumber *helpfulness, *clarity, *easiness, *interestLevel,*bookUse,*overall;
+        name = [results objectForKey:@"name"];
+        date = [results objectForKey:@"date"];
+        course = [results objectForKey:@"course"];
+        message = [results objectForKey:@"message"];
+        helpfulness = [results objectForKey:@"helpfulness"];
+        clarity = [results objectForKey:@"clarity"];
+        easiness = [results objectForKey:@"easiness"];
+        interestLevel = [results objectForKey:@"interestLevel"];
+        bookUse = [results objectForKey:@"textbookUse"];
+        overall = [results objectForKey:@"overall"];
+        term = [results objectForKey:@"term"];
+        NSString *strHelpfulness = [NSString stringWithFormat:@"%d", helpfulness.integerValue];
+        NSString *strOverall = [NSString stringWithFormat:@"%d", overall.integerValue];
+        NSString *strBookuse = [NSString stringWithFormat:@"%d", bookUse.integerValue];
+        NSString *strClarity = [NSString stringWithFormat:@"%d", clarity.integerValue];
+        NSString *strInterestLevel = [NSString stringWithFormat:@"%d", interestLevel.integerValue];
+        NSString *strEasiness = [NSString stringWithFormat:@"%d", easiness.integerValue];
+        PCFRateModel *obj = [[PCFRateModel alloc] initWithData:name date:date message:message helpfulness:strHelpfulness clarity:strClarity easiness:strEasiness interestLevel:strInterestLevel textbookUse:strBookuse overall:strOverall course:course term:term];
+        if (!reviews) reviews = [[NSMutableArray alloc] initWithCapacity:1];
+        [reviews addObject:obj];
+    }
+           if (reviews.count == [numReviews intValue])  {
+        isLoadingComments = NO;
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(80, 5, 160, 30)];
+        [label setTextColor:[UIColor whiteColor]];
+        [label setTextAlignment:NSTextAlignmentCenter];
+        [label setFont:[PCFFontFactory droidSansFontWithSize:22]];
+        [label setText:@"End of Reviews"];
+        [label setBackgroundColor:[UIColor clearColor]];
+        [view setBackgroundColor:[UIColor clearColor]];
+        [view addSubview:label];
+        [tableViewTwo setTableFooterView:view];
+        [self.tableViewOne reloadData];
+        [self.tableViewTwo reloadData];
+
+    }
+}
+-(void)loadReviews
+{
+    [self.activityIndicator startAnimating];
+    dispatch_queue_t task = dispatch_queue_create("Server Communication For Comments", nil);
+    dispatch_async(task, ^{
+        NSString *dataToSend = [NSString stringWithFormat:@"_COMPLETE_PROFESSOR_RATING*%@\n", professorName];
+        NSData *data = [dataToSend dataUsingEncoding:NSUTF8StringEncoding];
+        if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+        if (outputStream.streamStatus != NSStreamStatusOpen) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [PCFAnimationModel animateDown:@"Error communicating with server - please try again. If the problem persists, goto settings and submit a bug report to the developer." view:self color:nil time:0];
+            });
+            return;
+        }
+        while (![outputStream hasSpaceAvailable]);
+        if ([outputStream hasSpaceAvailable]) {
+            [outputStream write:[data bytes] maxLength:[data length]];
+        }
+    });
+
+}
+-(void)loadComments
+{
+    dispatch_queue_t task = dispatch_queue_create("Server Communication", nil);
+    dispatch_async(task, ^{
+        NSString *dataToSend = [NSString stringWithFormat:@"_COMPLETE_PROFESSOR_COMMENTS*%@\n", professorName];
+        NSData *data = [dataToSend dataUsingEncoding:NSUTF8StringEncoding];
+        if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+        if (outputStream.streamStatus != NSStreamStatusOpen) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [PCFAnimationModel animateDown:@"Error communicating with server - please try again. If the problem persists, goto settings and submit a bug report to the developer." view:self color:nil time:0];
+            });
+            return;
+        }
+
+        while (![outputStream hasSpaceAvailable]);
+        if ([outputStream hasSpaceAvailable]) {
+            [outputStream write:[data bytes] maxLength:[data length]];
+        }
+    });
+
+}
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+
+    if (tableView.tag == 0) {
+        if (indexPath.row == 0) {
+            PCFCustomNumberReviewsCell *cell = [self.tableViewOne dequeueReusableCellWithIdentifier:@"PCFNumberOfRatings"];
+            [cell.numberOfReviews setText:[NSString stringWithFormat:@"%d", numReviews.integerValue]];
+            UIImageView *imgView = [[UIImageView alloc] initWithFrame:cell.frame];
+            [imgView setImage:[UIImage imageNamed:@"1slot2.png"]];
+            [cell setBackgroundView:imgView];
+            return cell;
+        }else if(indexPath.row == 1) {
+            PCFCustomReviewCell *cell = [self.tableViewOne dequeueReusableCellWithIdentifier:@"RateEasiness"];
+            [cell.stars setBackgroundImage:[self getImageForStars:[NSString stringWithFormat:@"%d", totalEasiness.integerValue]] forState:UIControlStateNormal];
+            UIImageView *imgView = [[UIImageView alloc] initWithFrame:cell.frame];
+            [imgView setImage:[UIImage imageNamed:@"1slot2.png"]];
+            [cell setBackgroundView:imgView];
+            return cell;
+        }else if(indexPath.row == 2) {
+            PCFCustomReviewCell *cell = [self.tableViewOne dequeueReusableCellWithIdentifier:@"RateClarity"];
+            [cell.stars setBackgroundImage:[self getImageForStars:[NSString stringWithFormat:@"%d", totalClarity.integerValue]] forState:UIControlStateNormal];
+            UIImageView *imgView = [[UIImageView alloc] initWithFrame:cell.frame];
+            [imgView setImage:[UIImage imageNamed:@"1slot2.png"]];
+            [cell setBackgroundView:imgView];
+            return cell;
+        }else if(indexPath.row == 3) {
+            PCFCustomReviewCell *cell = [self.tableViewOne dequeueReusableCellWithIdentifier:@"RateHelpfulness"];
+            [cell.stars setBackgroundImage:[self getImageForStars:[NSString stringWithFormat:@"%d", totalHelpfulness.integerValue]] forState:UIControlStateNormal];
+            UIImageView *imgView = [[UIImageView alloc] initWithFrame:cell.frame];
+            [imgView setImage:[UIImage imageNamed:@"1slot2.png"]];
+            [cell setBackgroundView:imgView];
+            return cell;
+        }else if(indexPath.row == 4) {
+            PCFCustomReviewCell *cell = [self.tableViewOne dequeueReusableCellWithIdentifier:@"RateInterestLevel"];
+            [cell.stars setBackgroundImage:[self getImageForStars:[NSString stringWithFormat:@"%d", totalInterestLevel.integerValue]] forState:UIControlStateNormal];
+            UIImageView *imgView = [[UIImageView alloc] initWithFrame:cell.frame];
+            [imgView setImage:[UIImage imageNamed:@"1slot2.png"]];
+            [cell setBackgroundView:imgView];
+            return cell;
+        }else if(indexPath.row == 5) {
+            PCFCustomReviewCell *cell = [self.tableViewOne dequeueReusableCellWithIdentifier:@"RateTexbookUse"];
+            [cell.stars setBackgroundImage:[self getImageForStars:[NSString stringWithFormat:@"%d", totalTextbookUse.integerValue]] forState:UIControlStateNormal];
+            UIImageView *imgView = [[UIImageView alloc] initWithFrame:cell.frame];
+            [imgView setImage:[UIImage imageNamed:@"1slot2.png"]];
+            [cell setBackgroundView:imgView];
+            return cell;
+        }else if(indexPath.row == 6) {
+            PCFCustomReviewCell *cell = [self.tableViewOne dequeueReusableCellWithIdentifier:@"RateOverall"];
+            [cell.stars setBackgroundImage:[self getImageForStars:[NSString stringWithFormat:@"%d", totalOverall.integerValue]] forState:UIControlStateNormal];
+            UIImageView *imgView = [[UIImageView alloc] initWithFrame:cell.frame];
+            [imgView setImage:[UIImage imageNamed:@"1slot2.png"]];
+            [cell setBackgroundView:imgView];
+            return cell;
+        }
+    }else {
+        PCFCustomProfessorCommentCell *cell = [self.tableViewTwo dequeueReusableCellWithIdentifier:@"PCFCustomComment"];
+        if (cell == nil) {
+            NSArray *topLevelObjects = [[NSBundle mainBundle] loadNibNamed:@"PCFCustomReviewCell" owner:self options:nil];
+            cell = [topLevelObjects objectAtIndex:0];
+        }
+        PCFRateModel *rateObject = [reviews objectAtIndex:indexPath.section];
+        UIImageView *imgView = [[UIImageView alloc] initWithFrame:cell.frame];
+        [imgView setImage:[UIImage imageNamed:@"1slot2.png"]];
+        [cell setBackgroundView:imgView];
+        [cell.userName setText:rateObject.username];
+        [cell.date setText:rateObject.date];
+        [cell.course setText:rateObject.course];
+        [cell.comment setText:rateObject.message];
+        [cell.term setText:rateObject.term];
+        for (UIView *view in cell.contentView.subviews) {
+            if ([view isMemberOfClass:[UILabel class]]) {
+                UILabel *tempLabel = (UILabel *)view;
+                if ([tempLabel tag] != 0) {
+                    [tempLabel setFont:[PCFFontFactory droidSansFontWithSize:tempLabel.tag]];
+                }
+            }
+        }
+
+        CGSize size = [rateObject.message sizeWithFont:[PCFFontFactory droidSansFontWithSize:11] constrainedToSize:CGSizeMake(290, 100000)];
+        [cell.comment setFrame:CGRectMake(cell.comment.frame.origin.x, cell.comment.frame.origin.y, size.width, size.height)];
+        [cell.comment setBaselineAdjustment:UIBaselineAdjustmentAlignBaselines];
+        [cell.comment setPreferredMaxLayoutWidth:290];
+        [cell.comment setLineBreakMode:NSLineBreakByWordWrapping];
+        [cell.starClarity setBackgroundImage:[self getImageForStars:rateObject.totalClarity] forState:UIControlStateNormal];
+        [cell.starEasiness setBackgroundImage:[self getImageForStars:rateObject.totalEasiness] forState:UIControlStateNormal];
+        [cell.starHelpfulness setBackgroundImage:[self getImageForStars:rateObject.totalHelpfulness] forState:UIControlStateNormal];
+        [cell.starInterestLevel setBackgroundImage:[self getImageForStars:rateObject.totalInterestLevel] forState:UIControlStateNormal];
+        [cell.starOverall setBackgroundImage:[self getImageForStars:rateObject.totalOverall] forState:UIControlStateNormal];
+        [cell.starTextbookUse setBackgroundImage:[self getImageForStars:rateObject.totalTextbookUse] forState:UIControlStateNormal];
+        return cell;
+    }
+}
+
+-(UIImage *)getImageForStars:(NSString *)str
+{
+    NSInteger overallRating = [str integerValue];
+    NSString *imageName;
+    if (overallRating == 0) {
+        imageName = @"star-0.png";
+    }else if(overallRating == 1) {
+        imageName = @"star-1.png";
+    }else if(overallRating == 2) {
+        imageName = @"star-2.png";
+    }else if(overallRating == 3) {
+        imageName = @"star-3.png";
+    }else if(overallRating == 4) {
+        imageName = @"star-4.png";
+    }else if(overallRating == 5) {
+        imageName = @"star-5.png";
+    }
+    return [UIImage imageNamed:imageName];
+
+}
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (tableView.tag == 0) {
+        if (isLoading == YES) {
+            return 0;
+        }else {
+            return 7;
+        }
+    }else {
+        if (isLoadingComments == NO && reviews) {
+            return 1;
+        }else {
+            return 0;
+        }
+        
+    }
+}
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    if (isLoading == YES) return 0;
+    if (tableView.tag != 0) return reviews.count;
+    return  1;
+}
+/*
+ -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if (tableView.tag == 0) if (section == 0) return professorName;
+    return nil;
+}
+*/
+-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    if (section == 0 && tableView.tag == 0) {
+        if (isLoading == YES) {
+            return  activityIndicator;
+        }else if (isLoading == NO) {
+            if (isLoadingComments == NO && reviews.count > 0) {
+                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, TABLEVIEW_TWO_HEIGHT)];
+                //[scrollView setContentSize:CGSizeMake(320, tableViewTwo.frame.size.height)];
+                //[scrollView setScrollEnabled:YES];
+                [view addSubview:tableViewTwo];
+                return view;
+            }else if (isLoadingComments == YES){
+                UIView *subView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
+                UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(145, 10, 36, 36)];
+                [view setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
+                [view setColor:[UIColor whiteColor]];
+                [view startAnimating];
+                [subView addSubview:view];
+                return subView;
+            }else if (!reviews) {
+                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
+                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, 320, 30)];
+                [label setTextColor:[UIColor whiteColor]];
+                [label setTextAlignment:NSTextAlignmentCenter];
+                [label setFont:[PCFFontFactory droidSansFontWithSize:22]];
+                [label setText:@"No Reviews"];
+                [label setBackgroundColor:[UIColor clearColor]];
+                [view addSubview:label];
+                return view;
+            }
+
+        }
+    }
+        return nil;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    if (section == 0 && tableView.tag == 0) {
+        if ([PCFInAppPurchases boughtRemoveAds] == NO) {
+            if (adView && adView.hidden == NO) {
+                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 70)];
+                CGRect frame = adView.frame;
+                frame.origin.y = 0;
+                adView.frame = frame;
+                [view addSubview:adView];
+                return view;
+            }return nil;
+        }
+    }
+    return nil;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if (section == 0 & tableView.tag == 0) {
+        if ([PCFInAppPurchases boughtRemoveAds] == NO) {
+            if (adView && adView.hidden == NO)  {
+                return 70;
+            }
+        }
+        
+    }
+    return 5;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    if (tableView.tag == 0) {
+        if (isLoadingComments == NO && reviews.count > 0) return TABLEVIEW_TWO_HEIGHT + 50;
+    }else {
+        return 5;
+    }
+    return tableView.sectionFooterHeight;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView.tag == 2) {
+        PCFRateModel *model = [reviews objectAtIndex:indexPath.section];
+        //NSLog(@"%@",model.message);
+        CGSize size = [model.message sizeWithFont:[PCFFontFactory droidSansFontWithSize:11]  constrainedToSize:CGSizeMake(290, 100000)];
+            return (93 + size.height + 10);
+    }else {
+        return tableView.rowHeight;
+    }
+}
+
+@end
