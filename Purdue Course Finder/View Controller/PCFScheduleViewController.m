@@ -179,6 +179,18 @@ BOOL hasTimeConflict = NO;
                 }
                 if (!dontShowDayView) {
                     UIView *dayView = [PCFGenerateDayView viewForDay:[PCFGenerateDayView numberToDay:recordOfDay]];
+                    //add left button
+                    UIButton *leftButton = [[UIButton alloc] initWithFrame:CGRectMake(5, -2, 20, 20)];
+                    [leftButton setBackgroundColor:[UIColor clearColor]];
+                    [leftButton setTitle:@"<" forState:UIControlStateNormal];
+                    [leftButton addTarget:self action:@selector(swipeRight:) forControlEvents:UIControlEventTouchUpInside];
+                    //add right button
+                    UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(300, -2, 20, 20)];
+                    [rightButton setBackgroundColor:[UIColor clearColor]];
+                    [rightButton setTitle:@">" forState:UIControlStateNormal];
+                    [rightButton addTarget:self action:@selector(swipeLeft:) forControlEvents:UIControlEventTouchUpInside];
+                    [dayView addSubview:leftButton];
+                    [dayView addSubview:rightButton];
                     [dayView setFrame:CGRectMake(0, 110, 320, 20)];
                     [view addSubview:dayView];
                 }
@@ -211,6 +223,18 @@ BOOL hasTimeConflict = NO;
                 }
                 if (!dontShowDayView) {
                     UIView *dayView = [PCFGenerateDayView viewForDay:[PCFGenerateDayView numberToDay:recordOfDay]];
+                    //add left button
+                    UIButton *leftButton = [[UIButton alloc] initWithFrame:CGRectMake(5, -2, 20, 20)];
+                    [leftButton setBackgroundColor:[UIColor clearColor]];
+                    [leftButton setTitle:@"<" forState:UIControlStateNormal];
+                    [leftButton addTarget:self action:@selector(swipeRight:) forControlEvents:UIControlEventTouchUpInside];
+                    //add right button
+                    UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(300, -2, 20, 20)];
+                    [rightButton setBackgroundColor:[UIColor clearColor]];
+                    [rightButton setTitle:@">" forState:UIControlStateNormal];
+                    [rightButton addTarget:self action:@selector(swipeLeft:) forControlEvents:UIControlEventTouchUpInside];
+                    [dayView addSubview:leftButton];
+                    [dayView addSubview:rightButton];
                     [dayView setFrame:CGRectMake(0, 55, 320, 20)];
                     [view addSubview:dayView];
                     return view;
@@ -244,6 +268,18 @@ BOOL hasTimeConflict = NO;
         }
         if (!dontShowDayView) {
             UIView *dayView = [PCFGenerateDayView viewForDay:[PCFGenerateDayView numberToDay:recordOfDay]];
+            //add left button
+            UIButton *leftButton = [[UIButton alloc] initWithFrame:CGRectMake(5, -2, 20, 20)];
+            [leftButton setBackgroundColor:[UIColor clearColor]];
+            [leftButton setTitle:@"<" forState:UIControlStateNormal];
+            [leftButton addTarget:self action:@selector(swipeRight:) forControlEvents:UIControlEventTouchUpInside];
+            //add right button
+            UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(300, -2, 20, 20)];
+            [rightButton setBackgroundColor:[UIColor clearColor]];
+            [rightButton setTitle:@">" forState:UIControlStateNormal];
+            [rightButton addTarget:self action:@selector(swipeLeft:) forControlEvents:UIControlEventTouchUpInside];
+            [dayView addSubview:leftButton];
+            [dayView addSubview:rightButton];
             [dayView setFrame:CGRectMake(0, 55, 320, 20)];
             [view addSubview:dayView];
             return view;

@@ -54,7 +54,8 @@ extern AdWhirlView *adView;
      forControlEvents:UIControlEventTouchUpInside];
     
     self.navigationItem.leftBarButtonItem = barButtonItem;
-    
+    UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(choooseVC)];
+    self.navigationItem.rightBarButtonItem = barButton;
 }
 
 
@@ -350,9 +351,7 @@ extern AdWhirlView *adView;
             return  activityIndicator;
         }else if (isLoading == NO) {
             if (isLoadingComments == NO && courseReviews.count > 0) {
-                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, tableViewTwo.frame.size.height)];
-                [view addSubview:tableViewTwo];
-                return view;
+                return tableViewTwo;
             }else if (isLoadingComments == YES){
                 UIView *subView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
                 UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(145, 10, 36, 36)];
@@ -486,13 +485,35 @@ extern AdWhirlView *adView;
 */
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"CourseComment"]) {
+    if ([segue.identifier isEqualToString:@"CourseComment"] || [segue.identifier isEqualToString:@"CourseCommentv2"]) {
         UINavigationController *navController = segue.destinationViewController;
         PCFLeaveClassRatingViewController *viewController = navController.childViewControllers.lastObject;
         [viewController setCourseName:classNumber];
         [viewController setCourseTitle:classTitle];
     }
 }
+
+-(void)choooseVC
+{
+    NSString *strName;
+    if([[UIDevice currentDevice]userInterfaceIdiom]==UIUserInterfaceIdiomPhone)
+    {
+        //iphone
+        if ([[UIScreen mainScreen] bounds].size.height == 568 || [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+        {
+            //iphone 5
+            strName = @"CourseComment";
+        }
+        else
+        {
+            strName = @"CourseCommentv2";
+            //iphone 3.5 inch screen
+        }
+    }
+    [self performSegueWithIdentifier:strName sender:self];
+    
+}
+
 #pragma mark - Table view delegate
 
 

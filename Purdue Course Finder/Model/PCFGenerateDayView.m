@@ -13,12 +13,8 @@
 +(UIView *)viewForDay:(NSString *)day {
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
     [view setBackgroundColor:[UIColor clearColor]];
-    //add bg
-    //UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
-    //[imageView setImage:[UIImage imageNamed:@"background_full.png"]];
-    //[view addSubview:imageView];
     //add monday
-    UILabel *mondayLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 0, 20, 20)];
+    UILabel *mondayLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, 20, 20)];
     [mondayLabel setBackgroundColor:[UIColor clearColor]];
     [mondayLabel setText:@"M"];
     if ([day isEqualToString:@"M"]) {
@@ -27,7 +23,7 @@
         [mondayLabel setTextColor:[UIColor lightGrayColor]];
     }
     //add tuesday
-    UILabel *tuesdayLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 0, 20, 20)];
+    UILabel *tuesdayLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 0, 20, 20)];
     [tuesdayLabel setBackgroundColor:[UIColor clearColor]];
     [tuesdayLabel setText:@"T"];
     if ([day isEqualToString:@"T"]) {
@@ -36,7 +32,7 @@
         [tuesdayLabel setTextColor:[UIColor lightGrayColor]];
     }
     //add wednesday
-    UILabel *wednesdayLabel = [[UILabel alloc] initWithFrame:CGRectMake(150, 0, 20, 20)];
+    UILabel *wednesdayLabel = [[UILabel alloc] initWithFrame:CGRectMake(130, 0, 20, 20)];
     [wednesdayLabel setBackgroundColor:[UIColor clearColor]];
     [wednesdayLabel setText:@"W"];
     if ([day isEqualToString:@"W"]) {
@@ -45,7 +41,7 @@
         [wednesdayLabel setTextColor:[UIColor lightGrayColor]];
     }
     //add thursday
-    UILabel *thursdayLabel = [[UILabel alloc] initWithFrame:CGRectMake(180, 0, 20, 20)];
+    UILabel *thursdayLabel = [[UILabel alloc] initWithFrame:CGRectMake(170, 0, 20, 20)];
     [thursdayLabel setBackgroundColor:[UIColor clearColor]];
     [thursdayLabel setText:@"R"];
     if ([day isEqualToString:@"R"]) {
@@ -63,7 +59,7 @@
         [fridayLabel setTextColor:[UIColor lightGrayColor]];
     }
     //add saturday
-    UILabel *saturdayLabel = [[UILabel alloc] initWithFrame:CGRectMake(240, 0, 20, 20)];
+    UILabel *saturdayLabel = [[UILabel alloc] initWithFrame:CGRectMake(250, 0, 20, 20)];
     [saturdayLabel setBackgroundColor:[UIColor clearColor]];
     [saturdayLabel setText:@"S"];
     if ([day isEqualToString:@"S"]) {

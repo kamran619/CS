@@ -42,6 +42,7 @@ extern AdWhirlView *adView;
     NSNumber *totalOverall;
     NSNumber *numReviews;
     NSMutableArray *reviews;
+
 }
 @synthesize tableViewOne,activityIndicator,professorName, tableViewTwo;
 
@@ -56,12 +57,35 @@ extern AdWhirlView *adView;
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"SubmitReview"]) {
+    if ([segue.identifier isEqualToString:@"SubmitReview"] || [segue.identifier isEqualToString:@"SubmitReviewv2"]) {
         UINavigationController *navController = segue.destinationViewController;
         PCFLeaveProfessorRatingViewController *viewController = navController.childViewControllers.lastObject;
         [viewController setProfName:professorName];
     }
 }
+
+-(void)choooseVC
+{
+    NSString *strName;
+    if([[UIDevice currentDevice]userInterfaceIdiom]==UIUserInterfaceIdiomPhone)
+    {
+        //iphone
+        if ([[UIScreen mainScreen] bounds].size.height == 568 || [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+        {
+            //iphone 5
+            strName = @"SubmitReview";
+        }
+        else
+        {
+            strName = @"SubmitReviewv2";
+            //iphone 3.5 inch screen
+        }
+    }
+    [self performSegueWithIdentifier:strName sender:self];
+    
+}
+
+
 -(void)popViewController
 {
     [self.navigationController popViewControllerAnimated:YES];
@@ -75,9 +99,9 @@ extern AdWhirlView *adView;
     [button addTarget:self
                action:@selector(popViewController)
      forControlEvents:UIControlEventTouchUpInside];
-    
-    self.navigationItem.leftBarButtonItem = barButtonItem;
-    
+        self.navigationItem.leftBarButtonItem = barButtonItem;
+    UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(choooseVC)];
+    self.navigationItem.rightBarButtonItem = barButton;
 }
 
 
@@ -86,18 +110,37 @@ extern AdWhirlView *adView;
     [super viewDidLoad];
     [self setupBackButton];
     [self loadReviews];
+    self.pageControl = [[UIPageControl alloc] init];
+    [self.pageControl setNumberOfPages:2];
+    [self.scrollView setScrollEnabled:NO];
+    [self.scrollView setPagingEnabled:YES];
+    [self.scrollView setDelegate:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleResponse:) name:@"ServerResponseReceived" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleComments:) name:@"ServerCommentsReceived" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadReviews:) name:@"ReloadReviews" object:nil];
     [self.navigationItem setTitle:professorName];
     isLoading = YES;
     isLoadingComments = YES;
-    tableViewTwo = [[UITableView alloc] initWithFrame:CGRectMake(0, 10, 320, TABLEVIEW_TWO_HEIGHT) style:UITableViewStyleGrouped];
+    UILabel *label;
+    if ([PCFInAppPurchases boughtRemoveAds] == YES) {
+        tableViewTwo = [[UITableView alloc] initWithFrame:CGRectMake(320, 25, 320, TABLEVIEW_TWO_HEIGHT) style:UITableViewStyleGrouped];
+         label = [[UILabel alloc] initWithFrame:CGRectMake(321, 10, 320, 30)];
+        [self.scrollView setContentSize:CGSizeMake(320*2, self.view.frame.size.height)];
+    }else {
+        [self.scrollView setFrame:CGRectMake(0, 50, 320, self.view.frame.size.height - 50)];
+        tableViewTwo = [[UITableView alloc] initWithFrame:CGRectMake(320, 10, 320, TABLEVIEW_TWO_HEIGHT) style:UITableViewStyleGrouped];
+         label = [[UILabel alloc] initWithFrame:CGRectMake(320, 0, 320, 30)];
+        [self.scrollView setContentSize:CGSizeMake(320*2, self.view.frame.size.height-50)];
+    }
+    
     [tableViewTwo setSectionFooterHeight:0.0f];
+    [tableViewOne setScrollEnabled:NO];
+    [tableViewTwo setScrollEnabled:YES];
     [tableViewTwo setDataSource:self];
     [tableViewTwo setDelegate:self];
     [tableViewTwo setTag:2];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, 320, 30)];
+    [self.scrollView addSubview:tableViewTwo];
+    [self.scrollView addSubview:label];
     [label setTextColor:[UIColor whiteColor]];
     [label setTextAlignment:NSTextAlignmentCenter];
     [label setFont:[PCFFontFactory droidSansFontWithSize:22]];
@@ -112,6 +155,7 @@ extern AdWhirlView *adView;
     [self.tableViewOne setBackgroundView:imgView];
     imgView = [[UIImageView alloc] initWithFrame:self.tableViewTwo.frame];
     [imgView setImage:[UIImage imageNamed:@"background_full.png"]];
+    [self.scrollView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"background_full.png"]]];
     [self.tableViewTwo setBackgroundView:imgView];
 }
 
@@ -119,6 +163,8 @@ extern AdWhirlView *adView;
 {
     [super viewWillAppear:animated];
     [self.tableViewOne reloadData];
+    [adView setFrame:CGRectMake(0, 0, 320, 50)];
+    [self.view addSubview:adView];
 }
 
 -(void)reloadReviews:(NSNotification *)notification
@@ -193,9 +239,12 @@ extern AdWhirlView *adView;
         [label setBackgroundColor:[UIColor clearColor]];
         [view setBackgroundColor:[UIColor clearColor]];
         [view addSubview:label];
-        [tableViewTwo setTableFooterView:view];
+        [self.scrollView setScrollEnabled:YES];
+        [self.scrollView flashScrollIndicators];
+        //[tableViewTwo setTableFooterView:view];
         [self.tableViewOne reloadData];
         [self.tableViewTwo reloadData];
+        [self scrollToReviews];
 
     }
 }
@@ -220,6 +269,8 @@ extern AdWhirlView *adView;
     });
 
 }
+
+
 -(void)loadComments
 {
     dispatch_queue_t task = dispatch_queue_create("Server Communication", nil);
@@ -327,7 +378,7 @@ extern AdWhirlView *adView;
         CGSize size = [rateObject.message sizeWithFont:[PCFFontFactory droidSansFontWithSize:11] constrainedToSize:CGSizeMake(290, 100000)];
         [cell.comment setFrame:CGRectMake(cell.comment.frame.origin.x, cell.comment.frame.origin.y, size.width, size.height)];
         [cell.comment setBaselineAdjustment:UIBaselineAdjustmentAlignBaselines];
-        [cell.comment setPreferredMaxLayoutWidth:290];
+        //[cell.comment setPreferredMaxLayoutWidth:290];
         [cell.comment setLineBreakMode:NSLineBreakByWordWrapping];
         [cell.starClarity setBackgroundImage:[self getImageForStars:rateObject.totalClarity] forState:UIControlStateNormal];
         [cell.starEasiness setBackgroundImage:[self getImageForStars:rateObject.totalEasiness] forState:UIControlStateNormal];
@@ -390,6 +441,11 @@ extern AdWhirlView *adView;
     return nil;
 }
 */
+
+-(void)scrollToReviews
+{
+    [self.scrollView scrollRectToVisible:CGRectMake(320, 0, self.scrollView.frame.size.width, self.scrollView.frame.size.height) animated:YES];
+}
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     if (section == 0 && tableView.tag == 0) {
@@ -397,11 +453,7 @@ extern AdWhirlView *adView;
             return  activityIndicator;
         }else if (isLoading == NO) {
             if (isLoadingComments == NO && reviews.count > 0) {
-                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, TABLEVIEW_TWO_HEIGHT)];
-                //[scrollView setContentSize:CGSizeMake(320, tableViewTwo.frame.size.height)];
-                //[scrollView setScrollEnabled:YES];
-                [view addSubview:tableViewTwo];
-                return view;
+                return [[UIView alloc] initWithFrame:CGRectZero];
             }else if (isLoadingComments == YES){
                 UIView *subView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
                 UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(145, 10, 36, 36)];
@@ -427,40 +479,10 @@ extern AdWhirlView *adView;
         return nil;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    if (section == 0 && tableView.tag == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if (adView && adView.hidden == NO) {
-                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 70)];
-                CGRect frame = adView.frame;
-                frame.origin.y = 0;
-                adView.frame = frame;
-                [view addSubview:adView];
-                return view;
-            }return nil;
-        }
-    }
-    return nil;
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    if (section == 0 & tableView.tag == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if (adView && adView.hidden == NO)  {
-                return 70;
-            }
-        }
-        
-    }
-    return 5;
-}
-
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     if (tableView.tag == 0) {
-        if (isLoadingComments == NO && reviews.count > 0) return TABLEVIEW_TWO_HEIGHT + 50;
+        if (isLoadingComments == NO && reviews.count > 0) return self.pageControl.frame.size.height + 5;
     }else {
         return 5;
     }

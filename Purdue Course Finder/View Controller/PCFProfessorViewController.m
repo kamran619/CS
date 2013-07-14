@@ -40,7 +40,10 @@ extern UIColor *BGRYellow;
 
 -(void)popViewController
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"profChanged"
+     object:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 -(void)setupBackButton
 {

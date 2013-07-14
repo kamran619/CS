@@ -89,7 +89,7 @@ extern AdWhirlView *adView;
     self.textView.layer.cornerRadius = 8.0;
     self.textView.layer.borderColor = [[UIColor grayColor] CGColor];
     self.textView.layer.borderWidth = 1.0f;
-    [scrollView setContentSize:CGSizeMake(320*9, 435)];
+    [scrollView setContentSize:CGSizeMake(320*9, 0)];
     [scrollView setScrollEnabled:YES];
     [scrollView setDelegate:self];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchedView:)];

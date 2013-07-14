@@ -73,20 +73,13 @@ extern AdWhirlView *adView;
 -(void)keyboardSizeChanged:(CGSize)delta
 {
     if (lowerPortionTapped) {
-        BOOL shouldShiftViewUp = NO;
-        for (UIView *view in self.view.subviews) {
-            //for every subview, check to see if the frame overlaps with the keyboard position
-            if (view.frame.origin.y >= delta.height) {
-                shouldShiftViewUp = YES;
-                break;
-            }
-        }
-        if (shouldShiftViewUp) {
-            CGRect tempFrame = self.view.frame;
-            tempFrame.origin.y -= delta.height;
-            self.view.frame = tempFrame;
-        }
+        if (delta.height > 0) {
+            self.view.transform = CGAffineTransformMakeTranslation(0, -75);
 
+        }else {
+            self.view.transform = CGAffineTransformIdentity;
+
+        }
     }
 }
 
@@ -122,12 +115,6 @@ extern AdWhirlView *adView;
 }
 
 -(void)viewTapped:(UITapGestureRecognizer *)gesture {
-    CGPoint tappedPoint = [gesture locationInView:gesture.view];
-    if (tappedPoint.y >= 270) {
-        lowerPortionTapped = YES;
-    }else {
-        lowerPortionTapped = NO;
-    }
     [textFieldCourseNumber resignFirstResponder];
     [textFieldCourseTitle resignFirstResponder];
     [textFieldRangeFrom resignFirstResponder];
@@ -220,9 +207,11 @@ extern AdWhirlView *adView;
         [textFieldRangeFrom resignFirstResponder];
         [textFieldRangeTo resignFirstResponder];
         //set button off screen
-        [buttonSearch setFrame:CGRectMake(350, 166, 124, 27)];
+        //CGPoint currentPoint = buttonSearch.frame.origin;
+        //[buttonSearch setFrame:CGRectMake(currentPoint.x + 100, currentPoint.y, 124, 27)];
         [UIView animateWithDuration:0.5f delay:0.0f options:UIViewAnimationCurveLinear animations:^{
-            [[overlay layer] setFrame:CGRectMake(10, 103, 123, 20)];
+            CGPoint tempPoint = overlay.frame.origin;
+            [[overlay layer] setFrame:CGRectMake(10, tempPoint.y, 123, 20)];
             [textFieldSearch setPlaceholder:@"          Example: PSY 120"];
             //hide the other ui elements
             [buttonBrowse setHidden:YES];
@@ -247,7 +236,7 @@ extern AdWhirlView *adView;
             [buttonFriday setHidden:YES];
             [buttonSunday setHidden:YES];
             //show search bar
-            [buttonSearch setFrame:CGRectMake(183, 166, 124, 27)];
+            //[buttonSearch setFrame:CGRectMake(currentPoint.x, currentPoint.y, 124, 27)];
         }completion:^(BOOL finished) {
             if (finished) {
                     [buttonQuickSearch setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -265,10 +254,11 @@ extern AdWhirlView *adView;
         [textFieldRangeFrom resignFirstResponder];
         [textFieldRangeTo resignFirstResponder];
         //set button off screen
-        [buttonSearch setFrame:CGRectMake(350, 166, 124, 27)];
+       // CGPoint tempSearchPoint = buttonSearch.frame.origin;
+        //[buttonSearch setFrame:CGRectMake(tempSearchPoint.x + 100, tempSearchPoint.y, 124, 27)];
         [UIView animateWithDuration:0.5f delay:0.0f options:UIViewAnimationCurveLinear animations:^{
-            
-            [[overlay layer] setFrame:CGRectMake(132, 102, 72, 20)];
+            CGPoint moreTempPoint = overlay.frame.origin;
+            [[overlay layer] setFrame:CGRectMake(132, moreTempPoint.y, 72, 20)];
             [textFieldSearch setPlaceholder:@"          A CRN is 5 digits "];
             //hide the other ui elements
             [buttonBrowse setHidden:YES];
@@ -293,7 +283,7 @@ extern AdWhirlView *adView;
             [buttonFriday setHidden:YES];
             [buttonSunday setHidden:YES];
             //show search bar
-            [buttonSearch setFrame:CGRectMake(183, 166, 124, 27)];
+            //[buttonSearch setFrame:CGRectMake(183, tempSearchPoint.y, 124, 27)];
         }completion:^(BOOL finished) {
             if (finished) {
             [buttonQuickSearch setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
@@ -307,18 +297,19 @@ extern AdWhirlView *adView;
         customBarIndex = 2;
         [textFieldSearch resignFirstResponder];
         //set button off screen
-        [buttonSearch setFrame:CGRectMake(350, 166, 152, 28)];
+       // [buttonSearch setFrame:CGRectMake(350, 166, 152, 28)];
         CGRect tempFrame = buttonBrowse.frame;
         tempFrame.origin.x -= 100;
         [buttonBrowse setFrame:tempFrame];
         tempFrame.origin.x += 100;
-        tempFrame.origin.y = 166;
+        //tempFrame.origin.y = 166;
         [buttonBrowse setHidden:NO];
         [UIView animateWithDuration:0.5f delay:0.0f options:UIViewAnimationCurveLinear animations:^{
-            [[overlay layer] setFrame:CGRectMake(224, 103, 84, 20)];
-            [textFieldSearch setPlaceholder:@"          Example: PSY "];
+            CGPoint tempLayer = overlay.frame.origin;
+            [[overlay layer] setFrame:CGRectMake(224, tempLayer.y, 84, 20)];
+            [textFieldSearch setPlaceholder:@"          Subject: PSY "];
             //show search ba
-            [buttonSearch setFrame:CGRectMake(183, 166, 124, 27)];
+            //[buttonSearch setFrame:CGRectMake(183, 166, 124, 27)];
             [buttonBrowse setFrame:tempFrame];
             //[buttonSearch setFrame:CGRectMake(172.5, 190, 102, 26)];
             //[buttonSearch setFrame:CGRectMake(160, 371, 102, 26)];
@@ -407,7 +398,12 @@ extern AdWhirlView *adView;
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    if ([textField tag] == 1) if (textField.text.length < 10) [textField setText:[NSString stringWithFormat:@"          %@", textField.text]];
+    if ([textField tag] == 1) {
+        if (textField.text.length < 10) [textField setText:[NSString stringWithFormat:@"          %@", textField.text]];
+    
+    }else if([textField tag] == 2) {
+        lowerPortionTapped = YES;
+    }
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField
@@ -958,7 +954,7 @@ extern AdWhirlView *adView;
 
 -(void)profValueChanged:(NSNotification*)not
 {
-    if (not == nil) {
+    if (not.object == nil) {
         [chooseProfessor setTitle:@"Choose Professor" forState:UIControlStateNormal];
     }else {
         PCFObject *obj = [not object];

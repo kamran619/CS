@@ -16,4 +16,7 @@
 @property (nonatomic, strong) UITableView *tableViewTwo;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) NSString *professorName;
+@property (nonatomic, strong) UIPageControl *pageControl;
+@property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
+-(void)choooseVC;
 @end

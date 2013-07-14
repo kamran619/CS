@@ -14,4 +14,5 @@
 @property (nonatomic, strong) IBOutlet UITableView *tableViewOne;
 @property (nonatomic, strong) UITableView *tableViewTwo;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
+-(void)choooseVC;
 @end

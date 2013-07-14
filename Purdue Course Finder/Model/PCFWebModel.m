@@ -20,7 +20,7 @@ extern NSString *finalTermValue;
 
 +(NSString *)queryServer:(NSString *)address connectionType:(NSString *)type referer:(NSString *)referer arguements:(NSString *)args 
 {
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:address] cachePolicy:NSURLCacheStorageAllowed timeoutInterval:3];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:address] cachePolicy:NSURLCacheStorageAllowed timeoutInterval:7];
     if (type) [request setHTTPMethod:type];
     if (referer) [request setValue:referer forHTTPHeaderField:@"Referer"];
     if (args) {

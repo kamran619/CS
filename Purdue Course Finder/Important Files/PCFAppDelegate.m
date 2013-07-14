@@ -19,6 +19,10 @@
 #import "PCFFontFactory.h"
 #import "AppFlood.h"
 
+#define IS_WIDESCREEN ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
+#define IS_IPHONE ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPhone" ] )
+#define IS_IPOD   ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPod touch" ] )
+
 //global variables
 NSInputStream *inputStream;
 NSOutputStream *outputStream;
@@ -50,7 +54,7 @@ extern AdWhirlView *adView;
 
 -(void)setupInAppPurchases
 {
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"REMOVE_ADS_PURCHASED"];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"REMOVE_ADS_PURCHASED"];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"UNLIMITED_TIME_SNIPE_CREDITS_PURCHASED"];
 }
 -(void)customizeUserInterface
@@ -70,7 +74,7 @@ extern AdWhirlView *adView;
     [[UISegmentedControl appearance] setTintColor:[UIColor darkGrayColor]];
     //customBlue = [UIColor colorWithRed:0.0993145 green:0.0957361 blue:0.562879 alpha:.8];
     customBlue = [UIColor colorWithRed:0.141176 green:0.431373 blue:0.611765 alpha:1];
-    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObject:[UIFont systemFontOfSize:19] forKey:UITextAttributeFont]];
+    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObject:[PCFFontFactory droidSansBoldFontWithSize:18]forKey:UITextAttributeFont]];
 }
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -142,6 +146,32 @@ extern AdWhirlView *adView;
             [view show];
         }
     }
+    //manually load first view controller
+    self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle:nil];
+    
+    PCFMainScreenViewController *viewController;
+    
+    
+    if([[UIDevice currentDevice]userInterfaceIdiom]==UIUserInterfaceIdiomPhone)
+    {
+        //iphone
+        if ([[UIScreen mainScreen] bounds].size.height == 568 || [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+        {
+            //iphone 5
+            viewController = [storyboard instantiateViewControllerWithIdentifier:@"MSiPhone5"];
+        }
+        else
+        {
+            viewController = [storyboard instantiateViewControllerWithIdentifier:@"MSiPhone4"];
+            //iphone 3.5 inch screen
+        }
+    }
+    
+    UINavigationController *controller = [[UINavigationController alloc] initWithRootViewController:viewController];
+    self.window.rootViewController = controller;
+    [self.window makeKeyAndVisible];
+
     return YES;
 }
 
@@ -282,8 +312,8 @@ extern AdWhirlView *adView;
     [[NSUserDefaults standardUserDefaults] setInteger:++appCount forKey:@"appCount"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     application.applicationIconBadgeNumber = 0;
-    UIViewController *controller = [self.window.rootViewController.childViewControllers objectAtIndex:0];
-    [adView setDelegate:controller];
+    //UIViewController *controller = [self.window.rootViewController.childViewControllers objectAtIndex:0];
+    //[adView setDelegate:controller];
     if (initializedSocket == NO) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
 }
 
