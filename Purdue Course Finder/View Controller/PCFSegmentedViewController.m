@@ -50,7 +50,6 @@
     [super viewDidLoad];
     [self setupBackButton];
     customBlueColor = [UIColor colorWithRed:0.0542598 green:0.333333 blue:0.754819 alpha:1];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadScheduleMaker:) name:@"loadScheduleMaker" object:nil];
     scheduleViewController = [[self storyboard] instantiateViewControllerWithIdentifier:@"Schedule"];
     loginViewController = [[self storyboard] instantiateViewControllerWithIdentifier:@"Login"];
     [self changeView];
@@ -59,11 +58,6 @@
     }
 }
 
-
--(void)loadScheduleMaker:(id)sender
-{
-    [self performSegueWithIdentifier:@"ScheduleMaker" sender:self];
-}
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];

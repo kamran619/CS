@@ -19,6 +19,7 @@
 #import "PCFCustomAlertViewTwoButtons.h"
 #import "PCFCustomSearchCell.h"
 #import "PCFFontFactory.h"
+#import "AdWhirlManager.h"
 
 @interface PCFSearchTableViewController ()
 {
@@ -32,7 +33,6 @@ extern NSMutableArray *arraySubjects;
 extern NSString *finalTermValue;
 extern NSString *finalTermDescription;
 extern UIColor *BGRYellow;
-extern AdWhirlView *adView;
 
 @implementation PCFSearchTableViewController
 
@@ -81,23 +81,21 @@ extern AdWhirlView *adView;
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if ([PCFInAppPurchases boughtRemoveAds] == YES) {
-        adView.delegate = nil;
-        adView = nil;
-    }
     [self.tableView reloadData];
     
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (adView && adView.hidden == NO) {
-        return adView;
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
+        [[AdWhirlManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
+        return view;
     }else return nil;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (adView && adView.hidden == NO) return adView.frame.size.height;
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO)  return 50.0f;
     return 0;
 }
 

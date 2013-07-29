@@ -17,8 +17,10 @@
 #import "Reachability.h"
 #import "PCFCustomAlertViewTwoButtons.h"
 #import "PCFFontFactory.h"
+#import "PCFInAppPurchases.h"
+#import "AdWhirlManager.h"
 
-@interface PCFClassTableViewController () 
+@interface PCFClassTableViewController ()
 {
     
 }
@@ -29,7 +31,6 @@ extern NSString *finalClassValue;
 extern NSString *finalTermValue;
 extern NSString *finalTermDescription;
 extern NSString *const MY_AD_WHIRL_APPLICATION_KEY;
-extern AdWhirlView *adView;
 extern NSArray *arrayProfessors;
 extern NSArray *arraySubjects;
 @implementation PCFClassTableViewController
@@ -38,7 +39,7 @@ extern NSArray *arraySubjects;
 
 -(void)popViewController
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 -(void)setupBackButton
 {
@@ -76,13 +77,16 @@ extern NSArray *arraySubjects;
 }
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (adView && adView.hidden == NO) {
-        return adView;
-    }else return nil;
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
+        [[AdWhirlManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
+        return view;
+    }
+    return nil;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-     if (adView && adView.hidden == NO) return 50;
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) return 50;
     return 0;
 }
 
@@ -99,6 +103,7 @@ extern NSArray *arraySubjects;
         if (webData) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [activityInd stopAnimating];
+                [self.tableView reloadData];
             });
             NSArray *genArray = [PCFWebModel parseData:webData type:1];
             arraySubjects = [genArray objectAtIndex:0];

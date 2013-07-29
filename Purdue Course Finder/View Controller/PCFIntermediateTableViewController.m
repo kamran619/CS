@@ -16,6 +16,8 @@
 #import "PCFChooseClassTableViewController.h"
 #import "AdWhirlView.h"
 #import "PCFSchedueModel.h"
+#import "AdWhirlManager.h"
+#import "PCFInAppPurchases.h"
 
 @interface PCFIntermediateTableViewController ()
 {
@@ -26,7 +28,6 @@
 @end
 
 extern NSMutableArray *classesOffered;
-extern AdWhirlView *adView;
 @implementation PCFIntermediateTableViewController
 @synthesize modelArray;
 - (id)initWithStyle:(UITableViewStyle)style
@@ -144,18 +145,14 @@ extern AdWhirlView *adView;
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if (adView && adView.hidden == NO) {
-                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
-                CGRect frame = adView.frame;
-                adView.frame = CGRectMake(frame.origin.x, 0, frame.size.width, frame.size.height);
-                [view addSubview:adView];
-                return view;
-            }
+        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+            UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
+            [[AdWhirlManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
+            return view;
+        }
             UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 10)];
             return view;
         }
-    }
     return [[UIView alloc] initWithFrame:CGRectZero];
 }
 
@@ -163,7 +160,7 @@ extern AdWhirlView *adView;
 {
     if (section == 0) {
         if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if (adView && adView.hidden == NO) {
+            if ([AdWhirlManager sharedInstance].adView.hidden == NO) {
                 return 50;
             }
             return 10;

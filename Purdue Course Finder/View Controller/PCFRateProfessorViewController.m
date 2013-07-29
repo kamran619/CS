@@ -15,11 +15,11 @@
 #import "PCFCustomAlertViewTwoButtons.h"
 #import "PCFInAppPurchases.h"
 #import "AdWhirlView.h"
+#import "AdWhirlManager.h"
 
 extern BOOL initializedSocket;
 extern NSOutputStream *outputStream;
 extern NSMutableArray *professors;
-extern AdWhirlView *adView;
 
 @implementation PCFRateProfessorViewController
 {
@@ -306,10 +306,9 @@ extern AdWhirlView *adView;
 {
     if (section == 0) {
         if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if (adView && adView.hidden == NO)  {
+            if ([AdWhirlManager sharedInstance].adView.hidden == NO) {
                 UIView *tempView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 70)];
-                [tempView addSubview:adView];
-                [adView setFrame:CGRectMake(0, 0, 320, 50)];
+                [[AdWhirlManager sharedInstance] setAdViewOnView:tempView withDisplayViewController:self withPosition:AdPlacementTop];
                 return tempView;
             }
         }
@@ -320,7 +319,7 @@ extern AdWhirlView *adView;
 {
     if (section == 0) {
         if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if (adView && adView.hidden == NO)  {
+            if ([AdWhirlManager sharedInstance].adView.hidden == NO) {
                 return 70;
             }
         }

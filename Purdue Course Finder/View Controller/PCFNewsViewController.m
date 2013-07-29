@@ -14,13 +14,13 @@
 #import "PCFMainScreenViewController.h"
 #import "AdWhirlView.h"
 #import "PCFInAppPurchases.h"
+#import "AdWhirlManager.h"
 
 extern UIColor *customBlue;
 extern NSInputStream *inputStream;
 extern NSOutputStream *outputStream;
 extern BOOL initializedSocket;
 extern NSMutableArray *serverAnnouncements;
-extern AdWhirlView *adView;
 @interface PCFNewsViewController ()
 {
     

@@ -11,8 +11,6 @@
 		FE07522016921C590045AE44 /* PCFCustomCourseReviewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE07521F16921C580045AE44 /* PCFCustomCourseReviewCell.xib */; };
 		FE07522316921D1C0045AE44 /* PCFCustomCourseCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE07522216921D1C0045AE44 /* PCFCustomCourseCommentCell.m */; };
 		FE0752261692360C0045AE44 /* PCFLeaveClassRatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE0752251692360C0045AE44 /* PCFLeaveClassRatingViewController.m */; };
-		FE075237169442C10045AE44 /* PCFNotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE075236169442C10045AE44 /* PCFNotificationView.xib */; };
-		FE07523A169449C70045AE44 /* PCFNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE075239169449C70045AE44 /* PCFNotificationView.m */; };
 		FE0791D116880601007A9BC5 /* libFlurry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE0791D016880601007A9BC5 /* libFlurry.a */; };
 		FE0791D51688060D007A9BC5 /* libFlurryAds.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE0791D41688060D007A9BC5 /* libFlurryAds.a */; };
 		FE09F180174071E400D4032F /* arrow_white_back.png in Resources */ = {isa = PBXBuildFile; fileRef = FE09F17F174071E400D4032F /* arrow_white_back.png */; };
@@ -30,7 +28,6 @@
 		FE19B4411675B33C00B5F8DA /* PCFSegmentedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE19B4401675B33C00B5F8DA /* PCFSegmentedViewController.m */; };
 		FE19B4491675D98D00B5F8DA /* warning.png in Resources */ = {isa = PBXBuildFile; fileRef = FE19B4481675D98D00B5F8DA /* warning.png */; };
 		FE19B44C1675DB1A00B5F8DA /* PCFCustomAnnouncementCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE19B44B1675DB1A00B5F8DA /* PCFCustomAnnouncementCell.m */; };
-		FE19B44F1675DBBE00B5F8DA /* PCFNewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE19B44E1675DBBE00B5F8DA /* PCFNewsViewController.m */; };
 		FE19B4521675DD4200B5F8DA /* PCFSocketModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FE19B4511675DD4200B5F8DA /* PCFSocketModel.m */; };
 		FE19B4551675E5CC00B5F8DA /* PCFAnnouncementModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FE19B4541675E5CC00B5F8DA /* PCFAnnouncementModel.m */; };
 		FE19B4581675F7DA00B5F8DA /* PCFAnnouncementShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE19B4571675F7DA00B5F8DA /* PCFAnnouncementShowViewController.m */; };
@@ -116,6 +113,7 @@
 		FE2356DF1717504E00018FDB /* wednesday_active.png in Resources */ = {isa = PBXBuildFile; fileRef = FE2356851717504E00018FDB /* wednesday_active.png */; };
 		FE2356E01717504E00018FDB /* wednesday_inactive.png in Resources */ = {isa = PBXBuildFile; fileRef = FE2356861717504E00018FDB /* wednesday_inactive.png */; };
 		FE2356E817176BCD00018FDB /* navbar2.png in Resources */ = {isa = PBXBuildFile; fileRef = FE2356E717176BCB00018FDB /* navbar2.png */; };
+		FE2F2F29179CB5C50083C218 /* AdWhirlManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FE2F2F28179CB5C50083C218 /* AdWhirlManager.m */; };
 		FE43D6CF1688FCF100773E33 /* PCFCustomRatingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE43D6CE1688FCF100773E33 /* PCFCustomRatingCell.m */; };
 		FE43D6D41689011600773E33 /* PCFRateProfessorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE43D6D31689011600773E33 /* PCFRateProfessorViewController.m */; };
 		FE43D6D71689398F00773E33 /* PCFRatingsProfessorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE43D6D61689398E00773E33 /* PCFRatingsProfessorViewController.m */; };
@@ -160,7 +158,6 @@
 		FE61AF761650B6EF00E4ED98 /* PCFChooseClassTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE61AF401650B6EF00E4ED98 /* PCFChooseClassTableViewController.m */; };
 		FE61AF771650B6EF00E4ED98 /* PCFClassTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE61AF421650B6EF00E4ED98 /* PCFClassTableViewController.m */; };
 		FE61AF781650B6EF00E4ED98 /* PCFCourseCatalogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE61AF441650B6EF00E4ED98 /* PCFCourseCatalogViewController.m */; };
-		FE61AF791650B6EF00E4ED98 /* PCFCRNViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE61AF461650B6EF00E4ED98 /* PCFCRNViewController.m */; };
 		FE61AF7A1650B6EF00E4ED98 /* PCFFavoritesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE61AF481650B6EF00E4ED98 /* PCFFavoritesViewController.m */; };
 		FE61AF7B1650B6EF00E4ED98 /* PCFProfessorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE61AF4A1650B6EF00E4ED98 /* PCFProfessorViewController.m */; };
 		FE61AF7C1650B6EF00E4ED98 /* PCFPurdueLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE61AF4C1650B6EF00E4ED98 /* PCFPurdueLoginViewController.m */; };
@@ -234,7 +231,6 @@
 		FEA924F51748875600574588 /* Icon1.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA924F31748875600574588 /* Icon1.png */; };
 		FEA924F61748875600574588 /* splash.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA924F41748875600574588 /* splash.png */; };
 		FEA925061748B2D400574588 /* sched_empty.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA925051748B2D400574588 /* sched_empty.png */; };
-		FEA9250C17541BCD00574588 /* PCFScheduleMakerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA9250B17541BCD00574588 /* PCFScheduleMakerViewController.m */; };
 		FEB279D91661430B000B11D7 /* refresh.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB279D61661430B000B11D7 /* refresh.png */; };
 		FEB39DC917284AC900DB563D /* only_term_bg_backup.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB39DC817284AC900DB563D /* only_term_bg_backup.png */; };
 		FEB39DCB17284B5300DB563D /* dropdown.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB39DCA17284B5300DB563D /* dropdown.png */; };
@@ -298,9 +294,6 @@
 		FE0752241692360C0045AE44 /* PCFLeaveClassRatingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFLeaveClassRatingViewController.h; sourceTree = "<group>"; };
 		FE0752251692360C0045AE44 /* PCFLeaveClassRatingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFLeaveClassRatingViewController.m; sourceTree = "<group>"; };
 		FE07522716925D2D0045AE44 /* 512x512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 512x512.png; sourceTree = "<group>"; };
-		FE075236169442C10045AE44 /* PCFNotificationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PCFNotificationView.xib; sourceTree = "<group>"; };
-		FE075238169449C70045AE44 /* PCFNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFNotificationView.h; sourceTree = "<group>"; };
-		FE075239169449C70045AE44 /* PCFNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFNotificationView.m; sourceTree = "<group>"; };
 		FE0791CF16880601007A9BC5 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
 		FE0791D016880601007A9BC5 /* libFlurry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry.a; sourceTree = "<group>"; };
 		FE0791D21688060D007A9BC5 /* FlurryAdDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlurryAdDelegate.h; sourceTree = "<group>"; };
@@ -329,8 +322,6 @@
 		FE19B4481675D98D00B5F8DA /* warning.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = warning.png; sourceTree = "<group>"; };
 		FE19B44A1675DB1A00B5F8DA /* PCFCustomAnnouncementCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFCustomAnnouncementCell.h; sourceTree = "<group>"; };
 		FE19B44B1675DB1A00B5F8DA /* PCFCustomAnnouncementCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFCustomAnnouncementCell.m; sourceTree = "<group>"; };
-		FE19B44D1675DBBE00B5F8DA /* PCFNewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFNewsViewController.h; sourceTree = "<group>"; };
-		FE19B44E1675DBBE00B5F8DA /* PCFNewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFNewsViewController.m; sourceTree = "<group>"; };
 		FE19B4501675DD4200B5F8DA /* PCFSocketModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFSocketModel.h; sourceTree = "<group>"; };
 		FE19B4511675DD4200B5F8DA /* PCFSocketModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFSocketModel.m; sourceTree = "<group>"; };
 		FE19B4531675E5CC00B5F8DA /* PCFAnnouncementModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFAnnouncementModel.h; sourceTree = "<group>"; };
@@ -423,6 +414,8 @@
 		FE2356861717504E00018FDB /* wednesday_inactive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wednesday_inactive.png; sourceTree = "<group>"; };
 		FE2356E51717697F00018FDB /* nav.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nav.png; sourceTree = "<group>"; };
 		FE2356E717176BCB00018FDB /* navbar2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar2.png; sourceTree = "<group>"; };
+		FE2F2F27179CB5C50083C218 /* AdWhirlManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AdWhirlManager.h; path = "Purdue Course Finder/Model/AdWhirlManager.h"; sourceTree = "<group>"; };
+		FE2F2F28179CB5C50083C218 /* AdWhirlManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AdWhirlManager.m; path = "Purdue Course Finder/Model/AdWhirlManager.m"; sourceTree = "<group>"; };
 		FE43D6BB1688179600773E33 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
 		FE43D6BE1688F8D300773E33 /* rating_stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rating_stars.png; sourceTree = "<group>"; };
 		FE43D6CD1688FCF100773E33 /* PCFCustomRatingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFCustomRatingCell.h; sourceTree = "<group>"; };
@@ -530,8 +523,6 @@
 		FE61AF421650B6EF00E4ED98 /* PCFClassTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFClassTableViewController.m; sourceTree = "<group>"; };
 		FE61AF431650B6EF00E4ED98 /* PCFCourseCatalogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFCourseCatalogViewController.h; sourceTree = "<group>"; };
 		FE61AF441650B6EF00E4ED98 /* PCFCourseCatalogViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFCourseCatalogViewController.m; sourceTree = "<group>"; };
-		FE61AF451650B6EF00E4ED98 /* PCFCRNViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFCRNViewController.h; sourceTree = "<group>"; };
-		FE61AF461650B6EF00E4ED98 /* PCFCRNViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFCRNViewController.m; sourceTree = "<group>"; };
 		FE61AF471650B6EF00E4ED98 /* PCFFavoritesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFFavoritesViewController.h; sourceTree = "<group>"; };
 		FE61AF481650B6EF00E4ED98 /* PCFFavoritesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFFavoritesViewController.m; sourceTree = "<group>"; };
 		FE61AF491650B6EF00E4ED98 /* PCFProfessorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFProfessorViewController.h; sourceTree = "<group>"; };
@@ -652,8 +643,6 @@
 		FEA924F31748875600574588 /* Icon1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon1.png; sourceTree = "<group>"; };
 		FEA924F41748875600574588 /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splash.png; sourceTree = "<group>"; };
 		FEA925051748B2D400574588 /* sched_empty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sched_empty.png; sourceTree = "<group>"; };
-		FEA9250A17541BCD00574588 /* PCFScheduleMakerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFScheduleMakerViewController.h; sourceTree = "<group>"; };
-		FEA9250B17541BCD00574588 /* PCFScheduleMakerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFScheduleMakerViewController.m; sourceTree = "<group>"; };
 		FEB279D1166141FF000B11D7 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		FEB279D4166142C1000B11D7 /* binoculars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = binoculars.png; sourceTree = "<group>"; };
 		FEB279D61661430B000B11D7 /* refresh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = refresh.png; sourceTree = "<group>"; };
@@ -1211,8 +1200,6 @@
 				FE61AF421650B6EF00E4ED98 /* PCFClassTableViewController.m */,
 				FE61AF431650B6EF00E4ED98 /* PCFCourseCatalogViewController.h */,
 				FE61AF441650B6EF00E4ED98 /* PCFCourseCatalogViewController.m */,
-				FE61AF451650B6EF00E4ED98 /* PCFCRNViewController.h */,
-				FE61AF461650B6EF00E4ED98 /* PCFCRNViewController.m */,
 				FE61AF471650B6EF00E4ED98 /* PCFFavoritesViewController.h */,
 				FE61AF481650B6EF00E4ED98 /* PCFFavoritesViewController.m */,
 				FE61AF491650B6EF00E4ED98 /* PCFProfessorViewController.h */,
@@ -1227,8 +1214,6 @@
 				FE18F51616519B85009D5D2C /* PCFInAppViewController.m */,
 				FEDC47F7166309F40088BFEE /* PCFMainSearchTableViewController.h */,
 				FEDC47F8166309F40088BFEE /* PCFMainSearchTableViewController.m */,
-				FE19B44D1675DBBE00B5F8DA /* PCFNewsViewController.h */,
-				FE19B44E1675DBBE00B5F8DA /* PCFNewsViewController.m */,
 				FE19B4561675F7DA00B5F8DA /* PCFAnnouncementShowViewController.h */,
 				FE19B4571675F7DA00B5F8DA /* PCFAnnouncementShowViewController.m */,
 				FE19B45916760E9400B5F8DA /* PCFMainScreenViewController.h */,
@@ -1247,16 +1232,12 @@
 				FE07521C1692047C0045AE44 /* PCFClassRatingViewController.m */,
 				FE0752241692360C0045AE44 /* PCFLeaveClassRatingViewController.h */,
 				FE0752251692360C0045AE44 /* PCFLeaveClassRatingViewController.m */,
-				FE075238169449C70045AE44 /* PCFNotificationView.h */,
-				FE075239169449C70045AE44 /* PCFNotificationView.m */,
 				FE0FC4CF16C20B1E00FCD42E /* PCFSegmentedRateViewController.h */,
 				FE0FC4D016C20B1E00FCD42E /* PCFSegmentedRateViewController.m */,
 				FE09F18D1741EE4700D4032F /* PCFIntermediateTableViewController.h */,
 				FE09F18E1741EE4700D4032F /* PCFIntermediateTableViewController.m */,
 				FE09F1901741FDB000D4032F /* PCFIntermediateTableViewControllerTwo.h */,
 				FE09F1911741FDB100D4032F /* PCFIntermediateTableViewControllerTwo.m */,
-				FEA9250A17541BCD00574588 /* PCFScheduleMakerViewController.h */,
-				FEA9250B17541BCD00574588 /* PCFScheduleMakerViewController.m */,
 			);
 			name = "View Controllers";
 			path = "View Controller";
@@ -1434,6 +1415,8 @@
 		FEA485261638FE3E00251EC6 = {
 			isa = PBXGroup;
 			children = (
+				FE2F2F27179CB5C50083C218 /* AdWhirlManager.h */,
+				FE2F2F28179CB5C50083C218 /* AdWhirlManager.m */,
 				FE47A060179209E60093027E /* 57x57.png */,
 				FE47A061179209E60093027E /* 114x114.png */,
 				FE47A062179209E60093027E /* Default-568h@2x.png */,
@@ -1510,7 +1493,6 @@
 				FE07521F16921C580045AE44 /* PCFCustomCourseReviewCell.xib */,
 				FEA4854D1638FE3E00251EC6 /* MainStoryboard_iPhone.storyboard */,
 				FECFC6AA1708F3DE003B97D2 /* PCFSegmentedSearch.xib */,
-				FE075236169442C10045AE44 /* PCFNotificationView.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1621,7 +1603,6 @@
 				FE80BD82167B77FD002C726E /* sale.png in Resources */,
 				FEC56C5D168972D7008D6DD0 /* PCFCustomReviewCell.xib in Resources */,
 				FE07522016921C590045AE44 /* PCFCustomCourseReviewCell.xib in Resources */,
-				FE075237169442C10045AE44 /* PCFNotificationView.xib in Resources */,
 				FE6D596E16ED165800D7EA94 /* DroidSans-Bold.ttf in Resources */,
 				FE6D596F16ED165800D7EA94 /* DroidSans.ttf in Resources */,
 				FE6D597016ED165800D7EA94 /* Vegur-Bold.otf in Resources */,
@@ -1780,7 +1761,6 @@
 				FE61AF761650B6EF00E4ED98 /* PCFChooseClassTableViewController.m in Sources */,
 				FE61AF771650B6EF00E4ED98 /* PCFClassTableViewController.m in Sources */,
 				FE61AF781650B6EF00E4ED98 /* PCFCourseCatalogViewController.m in Sources */,
-				FE61AF791650B6EF00E4ED98 /* PCFCRNViewController.m in Sources */,
 				FE61AF7A1650B6EF00E4ED98 /* PCFFavoritesViewController.m in Sources */,
 				FE61AF7B1650B6EF00E4ED98 /* PCFProfessorViewController.m in Sources */,
 				FE61AF7C1650B6EF00E4ED98 /* PCFPurdueLoginViewController.m in Sources */,
@@ -1809,7 +1789,6 @@
 				FE9AC3FD166F4417001AD835 /* PCFRateView.m in Sources */,
 				FE19B4411675B33C00B5F8DA /* PCFSegmentedViewController.m in Sources */,
 				FE19B44C1675DB1A00B5F8DA /* PCFCustomAnnouncementCell.m in Sources */,
-				FE19B44F1675DBBE00B5F8DA /* PCFNewsViewController.m in Sources */,
 				FE19B4521675DD4200B5F8DA /* PCFSocketModel.m in Sources */,
 				FE19B4551675E5CC00B5F8DA /* PCFAnnouncementModel.m in Sources */,
 				FE19B4581675F7DA00B5F8DA /* PCFAnnouncementShowViewController.m in Sources */,
@@ -1831,7 +1810,6 @@
 				FE07521D1692047C0045AE44 /* PCFClassRatingViewController.m in Sources */,
 				FE07522316921D1C0045AE44 /* PCFCustomCourseCommentCell.m in Sources */,
 				FE0752261692360C0045AE44 /* PCFLeaveClassRatingViewController.m in Sources */,
-				FE07523A169449C70045AE44 /* PCFNotificationView.m in Sources */,
 				FE4BB36216B06F590056EC93 /* PCFAdOneViewController.m in Sources */,
 				FE4BB36516B06F680056EC93 /* PCFAdTwoViewController.m in Sources */,
 				FE0FC4D116C20B1E00FCD42E /* PCFSegmentedRateViewController.m in Sources */,
@@ -1864,7 +1842,7 @@
 				FE09F18F1741EE4800D4032F /* PCFIntermediateTableViewController.m in Sources */,
 				FE09F1921741FDB100D4032F /* PCFIntermediateTableViewControllerTwo.m in Sources */,
 				FE5E19D81742D5C800A07824 /* Reachability.m in Sources */,
-				FEA9250C17541BCD00574588 /* PCFScheduleMakerViewController.m in Sources */,
+				FE2F2F29179CB5C50083C218 /* AdWhirlManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

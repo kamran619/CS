@@ -12,6 +12,7 @@
 #import "PCFCustomSpinner.h"
 #import "PCFAppDelegate.h"
 #import "PCFAnimationModel.h"
+#import "AdWhirlManager.h"
 #import "AdWhirlView.h"
 #import "PCFInAppPurchases.h"
 
@@ -23,7 +24,6 @@
 @end
 extern NSOutputStream *outputStream;
 extern BOOL initializedSocket;
-extern AdWhirlView *adView;
 @implementation PCFLeaveClassRatingViewController
 @synthesize backButton,scrollView,starEasiness,starFun,starInterestLevel,starOverall,starTextbookUse,starUsefulness,submitButton,date,courseName,course,courseTitle,username,professorTextField,termTextField,textView;
 -(void)swipedUp:(UISwipeGestureRecognizer *)recognizer
@@ -33,16 +33,12 @@ extern AdWhirlView *adView;
     }
 }
 
--(void)viewWillAppear:(BOOL)animated
+-(void)viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    [super viewDidAppear:animated];
     if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-        if (adView && adView.hidden == NO) {
-            CGRect frame = adView.frame;
-            frame.origin.x = 0;
-            frame.origin.y = self.view.frame.size.height - frame.size.height;
-            adView.frame = frame;
-            [self.view addSubview:adView];
+        if ([AdWhirlManager sharedInstance].adView.hidden == NO) {
+            [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom];
         }
     }
 }

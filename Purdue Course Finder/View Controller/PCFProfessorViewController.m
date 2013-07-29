@@ -12,13 +12,14 @@
 #import "PCFTabBarController.h"
 #import "AdWhirlView.h"
 #import "PCFFontFactory.h"
+#import "PCFInAppPurchases.h"
+#import "AdWhirlManager.h"
 
 @interface PCFProfessorViewController ()
 
 @end
 
 extern NSArray *arrayProfessors;
-extern AdWhirlView *adView;
 extern UIColor *BGRYellow;
 @implementation PCFProfessorViewController
 @synthesize searchBar, results, backButton;
@@ -198,13 +199,15 @@ extern UIColor *BGRYellow;
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (adView && adView.hidden == NO) {
-        return adView;
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
+        [[AdWhirlManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
+        return view;
     }else return nil;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (adView && adView.hidden == NO) return adView.frame.size.height;
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) return 60;
     return 0;
 }
 

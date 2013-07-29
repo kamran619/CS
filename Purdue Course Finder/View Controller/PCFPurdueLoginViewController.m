@@ -14,6 +14,7 @@
 #import "PCFSearchTableViewController.h"
 #import "Reachability.h"
 #import "PCFInAppPurchases.h"
+#import "AdWhirlManager.h"
 
 @interface PCFPurdueLoginViewController ()
 {
@@ -24,7 +25,6 @@
 @implementation PCFPurdueLoginViewController
 @synthesize webView, activityIndicator,back,forward,refresh,home;
 extern BOOL internetActive;
-extern AdWhirlView *adView;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -46,13 +46,13 @@ extern AdWhirlView *adView;
     if (screenBounds.size.height == 480) {
         //iphone 4,4s
         //done
-        if ([PCFInAppPurchases boughtRemoveAds] == YES && !adView) {
+        if ([PCFInAppPurchases boughtRemoveAds] == YES && [AdWhirlManager sharedInstance].adView.hidden == YES) {
             webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 422)];
         }else {
             webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 50, 320, 372)];
         }
     }else if(screenBounds.size.height == 568) {
-        if ([PCFInAppPurchases boughtRemoveAds] == YES && !adView) {
+        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == YES) {
             webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 510)];
         }else {
             webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 50, 320, 460)];
@@ -75,12 +75,8 @@ extern AdWhirlView *adView;
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if ([PCFInAppPurchases boughtRemoveAds] == NO && adView) {
-        [adView removeFromSuperview];
-        CGRect temp = adView.frame;
-        temp.origin.y = 0;
-        adView.frame = temp;
-        [self.view addSubview:adView];
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+       [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementTop];
         CGRect webFrame = webView.frame;
         webView.frame = CGRectMake(0, 50, 320, webFrame.size.height-50);
         webView.hidden = NO;

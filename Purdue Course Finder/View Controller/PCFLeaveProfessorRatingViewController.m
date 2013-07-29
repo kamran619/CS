@@ -15,13 +15,14 @@
 #import "KBKeyboardHandler.h"
 #import "AdWhirlView.h"
 #import "PCFInAppPurchases.h"
+#import "AdWhirlManager.h"
+
 @interface PCFLeaveProfessorRatingViewController ()
 
 @end
 
 extern NSOutputStream *outputStream;
 extern BOOL initializedSocket;
-extern AdWhirlView *adView;
 @implementation PCFLeaveProfessorRatingViewController
 {
     PCFCustomSpinner *spinner;
@@ -51,6 +52,15 @@ extern AdWhirlView *adView;
     keyboard = nil;
 }
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if ([PCFInAppPurchases boughtRemoveAds] == NO) {
+        if ([AdWhirlManager sharedInstance].adView.hidden == NO) {
+            [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom];
+        }
+    }
+}
 -(void)popViewController
 {
     [self.navigationController popViewControllerAnimated:YES];
@@ -87,19 +97,6 @@ extern AdWhirlView *adView;
     self.view.frame = frame;
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-        if (adView && adView.hidden == NO) {
-            CGRect frame = adView.frame;
-            frame.origin.x = 0;
-            frame.origin.y = self.view.frame.size.height - frame.size.height;
-            adView.frame = frame;
-            [self.view addSubview:adView];
-        }
-    }
-}
 -(void)swipedUp:(UISwipeGestureRecognizer *)recognizer
 {
     if (self.pageControl.currentPage == 8) {

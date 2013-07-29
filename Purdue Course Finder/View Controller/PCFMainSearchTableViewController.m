@@ -34,6 +34,7 @@
 //Model
 #import "PCFSchedueModel.h"
 #import "KBKeyboardHandler.h"
+#import "AdWhirlManager.h"
 
 extern BOOL launchedWithPushNotification;
 extern BOOL internetActive;
@@ -59,7 +60,6 @@ extern NSString *finalClassValue;
 extern NSString *finalCRNValue;
 extern BOOL internetActive;
 NSArray *classesOffered = nil;
-extern AdWhirlView *adView;
 
 @implementation PCFMainSearchTableViewController
 {
@@ -138,6 +138,7 @@ extern AdWhirlView *adView;
     self.navigationItem.leftBarButtonItem = barButtonItem;
 
 }
+
 -(void)viewDidLoad
 {
     [super viewDidLoad];
@@ -434,16 +435,6 @@ extern AdWhirlView *adView;
             }
         }
     }
-}
--(void)updateAd:(id)sender
-{
-        [adView removeFromSuperview];
-        [self.view addSubview:adView];
-        [adView setFrame:CGRectMake(0, self.view.frame.size.height + 1, 320, 50)];
-    [UIView animateWithDuration:0.5f animations:^{
-        [adView setFrame:CGRectMake(0, self.view.frame.size.height-50, 320, 50)];
-    }];
-        
 }
 
 -(void) checkNetworkStatus:(NSNotification *)notice
@@ -917,12 +908,9 @@ extern AdWhirlView *adView;
     [internetReachable startNotifier];
     //[FlurryAds setAdDelegate:self];
     // We will show banner and interstitial integrations here.
-        if ([PCFInAppPurchases boughtRemoveAds] == NO)  {
-        //if (![FlurryAds adReadyForSpace:@"Full Ad"]) [FlurryAds fetchAdForSpace:@"Full Ad" frame:self.view.frame size:FULLSCREEN];
-            if (adView && adView.hidden == NO) {
-                [self updateAd:nil];
-            }
-        }
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+        [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom];
+    }
 }
 
 -(void)viewDidUnload

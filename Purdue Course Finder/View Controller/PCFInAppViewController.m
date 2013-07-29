@@ -16,8 +16,7 @@
 #import "PCFAnimationModel.h"
 #import "PCFInAppPurchases.h"
 #import "PCFFontFactory.h"
-
-extern AdWhirlView *adView;
+#include "AdWhirlManager.h"
 @interface PCFInAppViewController ()
 
 @end
@@ -269,8 +268,8 @@ extern AdWhirlView *adView;
     if ([productId isEqualToString:@"REMOVE_ADS"])
     {
         // enable the pro features
-        [adView setHidden:YES];
-        adView = nil;
+        [AdWhirlManager sharedInstance].adView.hidden = YES;
+        [AdWhirlManager sharedInstance].adView.hidden = nil;
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"REMOVE_ADS_PURCHASED"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }else if([productId isEqualToString:@"ONE_TIME_SNIPE_CREDIT"]) {

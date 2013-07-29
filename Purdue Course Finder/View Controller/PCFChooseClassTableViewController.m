@@ -24,7 +24,7 @@
 #import "PCFRatingsProfessorViewController.h"
 #import "PCFClassRatingViewController.h"
 #import <QuartzCore/QuartzCore.h>
-
+#import "AdWhirlManager.h"
 @interface PCFChooseClassTableViewController () //<FlurryAdDelegate>
 {
     NSMutableArray *cellExpansionArray;
@@ -42,7 +42,6 @@ extern NSArray *modelArray;
 extern NSMutableArray *savedResults;
 extern NSMutableArray *savedSchedule;
 extern BOOL purchasePressed;
-extern AdWhirlView *adView;
 
 @implementation PCFChooseClassTableViewController
 @synthesize catalogLink=_catalogLink, catalogNumber=_catalogNumber, catalogTitle=_catalogTitle, modelArray;
@@ -111,16 +110,14 @@ extern AdWhirlView *adView;
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        if (adView && adView.hidden == NO) {
+        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
             UIView *tempView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
-            [tempView addSubview:adView];
-            [adView setFrame:CGRectMake(0, 0, 320, 50)];
+            [[AdWhirlManager sharedInstance] setAdViewOnView:tempView withDisplayViewController:self withPosition:AdPlacementTop];
             return tempView;
         }
-                return [[UIView alloc] initWithFrame:CGRectZero];
-    }else {
-        return [[UIView alloc] initWithFrame:CGRectZero];
+        
     }
+    return [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 -(UIView*)tableView:(UITableView*)tableView viewForFooterInSection:(NSInteger)section
@@ -131,7 +128,8 @@ extern AdWhirlView *adView;
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) if (adView && adView.hidden == NO) return 60;
+    if (section == 0) if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO)  return 60.0f;
+
     return 5.0;
 }
 

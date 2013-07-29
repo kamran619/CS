@@ -19,6 +19,7 @@
 #import "AdWhirlView.h"
 #import "PCFFontFactory.h"
 #import "PCFAnimationModel.h"
+#import "AdWhirlManager.h"
 
 @interface PCFRatingsProfessorViewController ()
 
@@ -27,7 +28,6 @@
 extern NSOutputStream *outputStream;
 extern BOOL initializedSocket;
 extern UIColor *customBlue;
-extern AdWhirlView *adView;
 
 #define TABLEVIEW_TWO_HEIGHT self.view.bounds.size.height
 @implementation PCFRatingsProfessorViewController
@@ -153,6 +153,7 @@ extern AdWhirlView *adView;
     UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.tableViewOne.frame];
     [imgView setImage:[UIImage imageNamed:@"background_full.png"]];
     [self.tableViewOne setBackgroundView:imgView];
+    [self.view setBackgroundColor:[UIColor colorWithPatternImage:imgView.image]];
     imgView = [[UIImageView alloc] initWithFrame:self.tableViewTwo.frame];
     [imgView setImage:[UIImage imageNamed:@"background_full.png"]];
     [self.scrollView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"background_full.png"]]];
@@ -163,8 +164,7 @@ extern AdWhirlView *adView;
 {
     [super viewWillAppear:animated];
     [self.tableViewOne reloadData];
-    [adView setFrame:CGRectMake(0, 0, 320, 50)];
-    [self.view addSubview:adView];
+    [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementTop];
 }
 
 -(void)reloadReviews:(NSNotification *)notification

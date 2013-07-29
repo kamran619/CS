@@ -13,11 +13,11 @@
 #import "PCFAnnouncementModel.h"
 #import <QuartzCore/QuartzCore.h>
 #import "PCFAnimationModel.h"
-#import "PCFNewsViewController.h"
 #import "Reachability.h"
 #import "PCFFavoritesViewController.h"
 #import "PCFFontFactory.h"
 #import "PCFCustomAlertViewTwoButtons.h"
+#import "AdWhirlManager.h"
 
 @interface PCFMainScreenViewController ()
 
@@ -27,10 +27,8 @@ extern NSMutableArray *serverAnnouncements;
 extern NSOutputStream *outputStream;
 extern NSInputStream *inputStream;
 extern BOOL initializedSocket;
-extern NSString *const MY_AD_WHIRL_APPLICATION_KEY;
 extern UIColor *customBlue;
 extern UIColor *customYellow;
-AdWhirlView *adView = nil;
 extern BOOL launchedWithPushNotification;
 extern NSDictionary *pushInfo;
 @implementation PCFMainScreenViewController
@@ -65,13 +63,9 @@ extern NSDictionary *pushInfo;
     // Do any additional setup after loading the view.
     if ([PCFInAppPurchases boughtRemoveAds] == NO) {
         NSLog(@"Ads enabled");
-        adView = [AdWhirlView requestAdWhirlViewWithDelegate:self];
-        adView.frame = CGRectMake(0, [UIScreen mainScreen].applicationFrame.size.height+50, 320, 50);
-        [adView setHidden:YES];
-        [self.view addSubview:adView];
+        //[[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom animated:NO];
     }else {
         NSLog(@"Ads disabled");
-        adView = nil;
     }
     internetReachable = [Reachability reachabilityForInternetConnection];
     [internetReachable startNotifier];
@@ -106,6 +100,7 @@ extern NSDictionary *pushInfo;
     if (launchedWithPushNotification == YES) {
         [self pushNotificationReceived];
     }
+    
 }
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -124,11 +119,11 @@ extern NSDictionary *pushInfo;
 
 -(void)announcementTapped
 {
-    UIViewController *topView = self.navigationController.visibleViewController;
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle:nil];
-    
-    PCFNewsViewController *announcementView = [storyboard instantiateViewControllerWithIdentifier:@"Announcement"];
-    [topView.navigationController pushViewController:announcementView animated:YES];
+//    UIViewController *topView = self.navigationController.visibleViewController;
+//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle:nil];
+ //
+ //   PCFNewsViewController *announcementView = [storyboard instantiateViewControllerWithIdentifier:@"Announcement"];
+ //   [topView.navigationController pushViewController:announcementView animated:YES];
      }
 -(void)initSocket
 {
@@ -144,7 +139,7 @@ extern NSDictionary *pushInfo;
     [outputStream open];
     [outputStream scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
     initializedSocket = YES;
-    [self performSelector:@selector(getRecentAnnouncements) withObject:nil afterDelay:1];
+    //[self performSelector:@selector(getRecentAnnouncements) withObject:nil afterDelay:1];
 }
 
 
@@ -152,28 +147,9 @@ extern NSDictionary *pushInfo;
 {
     [super viewWillAppear:animated];
     [self setTitle:@"Purdue Course Sniper"];
-        if (adView.hidden == NO) {
-            NSLog(@"Adview size is %f\n", adView.frame.size.height);
-            NSLog(@"Adview width is %f\n", adView.frame.size.width);
-            adView.frame = CGRectMake(0, self.view.bounds.size.height + 50, adView.frame.size.width, 50);
-            [adView removeFromSuperview];
-            [self.view addSubview:adView];
-            [UIView beginAnimations:@"AdWhirlDelegate.adWhirlDidReceiveAd:"
-                            context:nil];
-            [UIView setAnimationDuration:0.7];
-            CGSize adSize = [adView actualAdSize];
-            CGRect newFrame = adView.frame;
-            newFrame.size = adSize;
-            newFrame.origin.x = (self.view.bounds.size.width - adSize.width)/ 2;
-            newFrame.origin.y = self.view.bounds.size.height - 50;
-            adView.frame = newFrame;
-            [UIView commitAnimations];
-        }
-
-    //if (internetActive == NO) {
-      //  [PCFAnimationModel animateDown:@"The internet is down." view:self color:[UIColor redColor]];
-    //}
-    
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+        [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom];
+    }
 }
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -182,6 +158,7 @@ extern NSDictionary *pushInfo;
 }
 -(void)getRecentAnnouncements
 {
+    /*
     if ([outputStream hasSpaceAvailable]) {
         /*NSString *announcementIdentifier = @"";
         if (serverAnnouncements != nil && serverAnnouncements.count > 0) {
@@ -190,21 +167,21 @@ extern NSDictionary *pushInfo;
             }
             
             
-        }*/
+        }
         dispatch_queue_t task = dispatch_queue_create("Send Announcement Data", nil);
         dispatch_async(task, ^{
             NSString *str = @"_GET_ANNOUNCEMENTS*\n";
-            /*if (announcementIdentifier == @"") {
+            if (announcementIdentifier == @"") {
                 str = @"_GET_ANNOUNCEMENTS*\n";
             }else if(announcementIdentifier != @"") {
                 str = [str stringByAppendingFormat:@"_GET_ANNOUNCEMENTS*%@\n", announcementIdentifier];
-            }*/
+            }
             NSData *dataToSend = [[NSData alloc] initWithData:[str dataUsingEncoding:NSUTF8StringEncoding]];
             [outputStream write:dataToSend.bytes maxLength:dataToSend.length];
         });
     }else {
         [self performSelector:@selector(getRecentAnnouncements) withObject:nil afterDelay:1];
-    }
+    }*/
 }
 
 -(void) checkNetworkStatus:(NSNotification *)notice
@@ -244,51 +221,16 @@ extern NSDictionary *pushInfo;
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
+-(void)viewDidDisappear:(BOOL)animated
+{
+    
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark AdWhirl required delegate methods
-- (NSString *)adWhirlApplicationKey {
-    return MY_AD_WHIRL_APPLICATION_KEY;
-}
-
-- (UIViewController *)viewControllerForPresentingModalView {
-    return self;
-}
-
-- (void)adWhirlDidReceiveAd:(AdWhirlView *)adWhirlView {
-    adView.hidden = NO;
-    if (self.view.window) {
-    [UIView beginAnimations:@"AdWhirlDelegate.adWhirlDidReceiveAd:"
-                    context:nil];
-    [UIView setAnimationDuration:0.7];
-    CGSize adSize = [adView actualAdSize];
-    CGRect newFrame = adView.frame;
-    newFrame.size = adSize;
-    newFrame.origin.x = (self.view.bounds.size.width - adSize.width)/ 2;
-    newFrame.origin.y = self.view.bounds.size.height - 50;
-    adView.frame = newFrame;
-    [UIView commitAnimations];
-    }else {
-        [UIView beginAnimations:@"AdWhirlDelegate.adWhirlDidReceiveAd:"
-                        context:nil];
-        [UIView setAnimationDuration:0.7];
-        CGSize adSize = [adView actualAdSize];
-        CGRect newFrame = adView.frame;
-        newFrame.size = adSize;
-        newFrame.origin.x = (self.view.bounds.size.width - adSize.width)/ 2;
-        //newFrame.origin.y = self.view.bounds.size.height - 50;
-        adView.frame = newFrame;
-        [UIView commitAnimations];
-    }
-}
--(void)adWhirlDidFailToReceiveAd:(AdWhirlView *)adWhirlView usingBackup:(BOOL)yesOrNo
-{
-    adView.hidden = YES;
-}
 
 #pragma mark - NSStreamDelegate methods
 - (void)stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent{

@@ -19,6 +19,7 @@
 #import "AdWhirlView.h"
 #import "Reachability.h"
 #import "PCFInAppPurchases.h"
+#import "AdWhirlManager.h"
 #import "PCFAppDelegate.h"
 #import "PCFCustomAlertView.h"
 #import "PCFAnimationModel.h"
@@ -49,7 +50,6 @@ extern NSMutableArray *watchingClasses;
 extern NSMutableArray *serverAnnouncements;
 extern NSMutableArray *professors;
 extern BOOL isDoneWithSchedule;
-extern AdWhirlView *adView;
 
 @implementation PCFFavoritesViewController
 {
@@ -211,7 +211,7 @@ extern AdWhirlView *adView;
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) if (adView && adView.hidden == NO) return 60;
+    if (section == 0)  if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) return 60;
     return 5.0;
 }
 
@@ -230,9 +230,7 @@ extern AdWhirlView *adView;
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    [adView setFrame:CGRectMake(0, 0, 320, 50)];
     [self.navigationController.navigationItem setTitle:@"Favorites"];
-    [adView removeFromSuperview];
     [[self tableView] reloadData];
     if (internetActive == NO) {
         [PCFAnimationModel animateDown:@"You do not have an active internet connection." view:self color:[UIColor redColor] time:0];
@@ -287,9 +285,9 @@ extern AdWhirlView *adView;
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        if (adView && adView.hidden == NO) {
+        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
             UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
-            [view addSubview:adView];
+            [[AdWhirlManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
             return view;
         }
     }

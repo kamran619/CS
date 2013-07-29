@@ -18,6 +18,8 @@
 #import "PCFMainScreenViewController.h"
 #import "PCFInAppPurchases.h"
 #include "PCFFontFactory.h"
+#include "AdWhirlManager.h"
+
 @interface PCFClassRatingViewController ()
 {
     BOOL isLoading;
@@ -35,7 +37,6 @@
 extern UIColor *customBlue;
 extern BOOL initializedSocket;
 extern NSOutputStream *outputStream;
-extern AdWhirlView *adView;
 @implementation PCFClassRatingViewController
 @synthesize tableViewOne,tableViewTwo,classTitle,activityIndicator,classNumber;
 
@@ -397,19 +398,15 @@ extern AdWhirlView *adView;
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (section == 0 && tableView.tag == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if (adView && adView.hidden == NO) {
+        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
                 UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 80)];
-                CGRect frame = adView.frame;
-                frame.origin.y = 0;
-                adView.frame = frame;
+                [[AdWhirlManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
                 UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 60, 320, 30)];
                 [label setNumberOfLines:0];
                 [label setText:classTitle];
                 [label setFont:[PCFFontFactory droidSansFontWithSize:14]];
                 [label setTextColor:[UIColor whiteColor]];
                 [label setBackgroundColor:[UIColor clearColor]];
-                [view addSubview:adView];
                 [view addSubview:label];
                 return view;
             }
@@ -423,17 +420,15 @@ extern AdWhirlView *adView;
             return label;
 
         }
-    }
     return nil;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (section == 0 & tableView.tag == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if (adView && adView.hidden == NO)  {
-                return 90;
-            }return 10;
+        if ([PCFInAppPurchases boughtRemoveAds]) {
+         if ([AdWhirlManager sharedInstance].adView.hidden == NO) return 90;
+            return 10;
         }else {
             return 30;
         }

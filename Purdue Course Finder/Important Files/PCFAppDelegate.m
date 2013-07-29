@@ -46,7 +46,6 @@ NSString *const MY_AD_WHIRL_APPLICATION_KEY = @"5fab3b1d404940cb99025122c0e53b68
 NSString *const MY_FLURRY_APPLICATION_KEY = @"8F5MTS6R7PZRM9V3N5B2";
 BOOL launchedWithPushNotification = NO;
 NSDictionary *pushInfo = nil;
-extern AdWhirlView *adView;
 @implementation PCFAppDelegate
 {
 }
@@ -312,8 +311,6 @@ extern AdWhirlView *adView;
     [[NSUserDefaults standardUserDefaults] setInteger:++appCount forKey:@"appCount"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     application.applicationIconBadgeNumber = 0;
-    //UIViewController *controller = [self.window.rootViewController.childViewControllers objectAtIndex:0];
-    //[adView setDelegate:controller];
     if (initializedSocket == NO) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
 }
 

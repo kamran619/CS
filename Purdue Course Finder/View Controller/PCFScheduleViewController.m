@@ -17,6 +17,7 @@
 #import "PCFInAppPurchases.h"
 #import "PCFGenerateDayView.h"
 #include "PCFFontFactory.h"
+#include "AdWhirlManager.h"
 
 @interface PCFScheduleViewController ()
 {
@@ -29,7 +30,6 @@
 extern UIColor *BGRYellow;
 extern NSMutableArray *savedSchedule;
 extern NSString *const MY_AD_WHIRL_APPLICATION_KEY;
-extern AdWhirlView *adView;
 BOOL isDoneWithSchedule = NO;
 BOOL hasTimeConflict = NO;
 @implementation PCFScheduleViewController
@@ -121,7 +121,7 @@ BOOL hasTimeConflict = NO;
 }
 -(void)barButtonPushed:(id)sender
 {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Clear Schedule" otherButtonTitles:@"Schedule Maker", nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Clear Schedule" otherButtonTitles:nil];
     [sheet showInView:self.view];
 }
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -130,8 +130,6 @@ BOOL hasTimeConflict = NO;
         //clear schedule
         savedSchedule = nil;
         [self.tableView reloadData];
-    }else if(buttonIndex == 1) {
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"loadScheduleMaker" object:nil]];
     }
 }
 -(void)viewDidDisappear:(BOOL)animated
@@ -150,10 +148,9 @@ BOOL hasTimeConflict = NO;
     if (section == 0) {
         BOOL dontShowDayView = NO;
         if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if (adView && adView.hidden == NO) {
+            if ([AdWhirlManager sharedInstance].adView.hidden == NO) {
                 UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 135)];
-                [adView setFrame:CGRectMake(0, 0, 320, 50)];
-                [view addSubview:adView];
+                [[AdWhirlManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
                 if (!savedSchedule) {
                     dontShowDayView = YES;
                     static NSString *CellIdentifier = @"PCFFavoriteHelpCell";
@@ -293,7 +290,7 @@ BOOL hasTimeConflict = NO;
 {
     if (section ==0) {
         if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if (adView && adView.hidden == NO) return 135;
+            if ([AdWhirlManager sharedInstance].adView.hidden == NO) return 135;
             return 75;
         } return 75;
     

@@ -48,7 +48,6 @@ extern AdWhirlView *adView;
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [adView removeFromSuperview];
 }
 
 - (void)didReceiveMemoryWarning
@@ -68,16 +67,13 @@ extern AdWhirlView *adView;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return 2;
+    return 1;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
     if (indexPath.row == 0) {
-        [[cell textLabel] setText:@"Announcements"];
-        [[cell imageView] setImage:[UIImage imageNamed:@"news.png"]];
-    }else if (indexPath.row == 1) {
         [[cell textLabel] setText:@"In-App Purchases"];
         [[cell imageView] setImage:[UIImage imageNamed:@"cart_icon.png"]];
     }
@@ -100,8 +96,6 @@ extern AdWhirlView *adView;
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row == 0) {
-        [self performSegueWithIdentifier:@"AnnouncementSegue" sender:self];
-    }else if(indexPath.row == 1) {
         [self performSegueWithIdentifier:@"InAppPurchaseSegue" sender:self];
     }
 }

@@ -13,6 +13,8 @@
 #import "PCFSearchTableViewController.h"
 #import "PCFAnimationModel.h"
 #import "PCFFontFactory.h"
+#import "PCFInAppPurchases.h"
+#import "AdWhirlManager.h"
 
 @interface PCFCourseCatalogViewController ()
 
@@ -25,7 +27,6 @@ extern NSString *catalogLink;
 extern NSString *catalogTitle;
 extern NSString *catalogNumber;
 extern NSString *const MY_AD_WHIRL_APPLICATION_KEY;
-extern AdWhirlView *adView;
 
 -(void)popViewController
 {
@@ -51,13 +52,6 @@ extern AdWhirlView *adView;
     [super viewDidLoad];
     //[self setupBackButton];
      self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background_full.png"]];
-    if (adView && adView.hidden == NO) {
-        adView.frame = CGRectMake(0, 0, adView.frame.size.width, adView.frame.size.height);
-        [self.view addSubview:adView];
-        scrollView.frame = CGRectMake(scrollView.frame.origin.x, scrollView.frame.origin.y+50, scrollView.frame.size.width, scrollView.frame.size.height - 50);
-        catalogName.frame = CGRectMake(catalogName.frame.origin.x, catalogName.frame.origin.y, catalogName.frame.size.width, catalogName.frame.size.height);
-        catalogLabel.frame = CGRectMake(catalogLabel.frame.origin.x, catalogLabel.frame.origin.y+50, catalogLabel.frame.size.width, catalogLabel.frame.size.height);
-    }
     [catalogName setFont:[PCFFontFactory droidSansBoldFontWithSize:16]];
     [catalogLabel setFont:[PCFFontFactory droidSansFontWithSize:15]];
     [scrollView setContentSize:CGSizeMake(320, 500)];
@@ -73,6 +67,19 @@ extern AdWhirlView *adView;
     [self queryServer:catalogLink];
 }
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+        [UIView beginAnimations:@"slideDown" context:nil];
+        [UIView setAnimationDuration:0.3f];
+        scrollView.frame = CGRectMake(scrollView.frame.origin.x, scrollView.frame.origin.y+50, scrollView.frame.size.width, scrollView.frame.size.height);
+        [UIView commitAnimations];
+        //catalogName.frame = CGRectMake(catalogName.frame.origin.x, catalogName.frame.origin.y, catalogName.frame.size.width, catalogName.frame.size.height);
+        //catalogLabel.frame = CGRectMake(catalogLabel.frame.origin.x, catalogLabel.frame.origin.y+50, catalogLabel.frame.size.width, catalogLabel.frame.size.height);
+        [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementTop];
+    }
+}
 
 - (void)didReceiveMemoryWarning
 {
