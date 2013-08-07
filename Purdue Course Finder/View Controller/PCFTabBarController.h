@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AdWhirlDelegateProtocol.h"
 
-@interface PCFTabBarController : UITabBarController <AdWhirlDelegate>
+@interface PCFTabBarController : UITabBarController 
 
 @end

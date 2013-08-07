@@ -9,14 +9,12 @@
 #import "PCFSettingsTableViewController.h"
 #import "PCFInAppPurchases.h"
 #import "PCFMainScreenViewController.h"
-#import "AdWhirlView.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface PCFSettingsTableViewController ()
 
 @end
 
-extern AdWhirlView *adView;
 
 @implementation PCFSettingsTableViewController
 @synthesize back;

@@ -14,9 +14,7 @@
 #import "PCFCourseRecord.h"
 #import "PCFAppDelegate.h"
 #import "PCFScheduleViewController.h"
-#import "AdWhirlView.h"
-//#import "FlurryAds.h"
-//#import "FlurryAdDelegate.h"
+
 #import "Reachability.h"
 #import "PCFInAppPurchases.h"
 #import "PCFAnimationModel.h"
@@ -24,7 +22,7 @@
 #import "PCFRatingsProfessorViewController.h"
 #import "PCFClassRatingViewController.h"
 #import <QuartzCore/QuartzCore.h>
-#import "AdWhirlManager.h"
+#import "AdManager.h"
 @interface PCFChooseClassTableViewController () //<FlurryAdDelegate>
 {
     NSMutableArray *cellExpansionArray;
@@ -110,9 +108,9 @@ extern BOOL purchasePressed;
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) {
             UIView *tempView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
-            [[AdWhirlManager sharedInstance] setAdViewOnView:tempView withDisplayViewController:self withPosition:AdPlacementTop];
+            [[AdManager sharedInstance] setAdViewOnView:tempView withDisplayViewController:self withPosition:AdPlacementTop];
             return tempView;
         }
         
@@ -128,7 +126,7 @@ extern BOOL purchasePressed;
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO)  return 60.0f;
+    if (section == 0) if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO)  return 60.0f;
 
     return 5.0;
 }

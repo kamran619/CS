@@ -14,11 +14,10 @@
 #import "PCFCustomProfessorCommentCell.h"
 #import "PCFCustomCourseCommentCell.h"
 #import "PCFLeaveClassRatingViewController.h"
-#import "AdWhirlView.h"
 #import "PCFMainScreenViewController.h"
 #import "PCFInAppPurchases.h"
 #include "PCFFontFactory.h"
-#include "AdWhirlManager.h"
+#include "AdManager.h"
 
 @interface PCFClassRatingViewController ()
 {
@@ -398,9 +397,9 @@ extern NSOutputStream *outputStream;
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (section == 0 && tableView.tag == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) {
                 UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 80)];
-                [[AdWhirlManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
+                [[AdManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
                 UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 60, 320, 30)];
                 [label setNumberOfLines:0];
                 [label setText:classTitle];
@@ -427,7 +426,7 @@ extern NSOutputStream *outputStream;
 {
     if (section == 0 & tableView.tag == 0) {
         if ([PCFInAppPurchases boughtRemoveAds]) {
-         if ([AdWhirlManager sharedInstance].adView.hidden == NO) return 90;
+         if ([AdManager sharedInstance].adView.hidden == NO) return 90;
             return 10;
         }else {
             return 30;

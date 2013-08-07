@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AdWhirlDelegateProtocol.h"
 
 @interface PCFCRNViewController : UIViewController <UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource>
 

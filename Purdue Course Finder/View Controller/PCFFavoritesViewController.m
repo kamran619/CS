@@ -16,10 +16,9 @@
 #import "PCFTabBarController.h"
 #import "PCFScheduleViewController.h"
 #import "PCFClassTableViewController.h"
-#import "AdWhirlView.h"
 #import "Reachability.h"
 #import "PCFInAppPurchases.h"
-#import "AdWhirlManager.h"
+#import "AdManager.h"
 #import "PCFAppDelegate.h"
 #import "PCFCustomAlertView.h"
 #import "PCFAnimationModel.h"
@@ -211,7 +210,7 @@ extern BOOL isDoneWithSchedule;
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (section == 0)  if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) return 60;
+    if (section == 0)  if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) return 60;
     return 5.0;
 }
 
@@ -285,9 +284,9 @@ extern BOOL isDoneWithSchedule;
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) {
             UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
-            [[AdWhirlManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
+            [[AdManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
             return view;
         }
     }

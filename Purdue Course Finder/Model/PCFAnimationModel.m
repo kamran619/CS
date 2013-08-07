@@ -9,9 +9,7 @@
 #import "PCFAnimationModel.h"
 #import <QuartzCore/QuartzCore.h>
 #import "PCFAppDelegate.h"
-#import "PCFNotificationView.h"
 #import "PCFMainScreenViewController.h"
-#import "AdWhirlView.h"
 #import "PCFInAppPurchases.h"
 #import "RNBlurModalView.h"
 
@@ -21,7 +19,7 @@ extern UIColor *customGreen;
 @implementation PCFAnimationModel
 static BOOL currentlyDisplayed = NO;
 RNBlurModalView *notificationView = nil;
-extern AdWhirlView *adView;
+//extern AdWhirlView *adView;
 CGRect currentFrame;
 BOOL animateUp = YES;
 

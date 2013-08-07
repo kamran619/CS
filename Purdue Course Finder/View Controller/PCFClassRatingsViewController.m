@@ -14,11 +14,10 @@
 #import "PCFCustomShowClassCell.h"
 #import "PCFObject.h"
 #import "PCFAppDelegate.h"
-#import "AdWhirlView.h"
 #import "PCFInAppPurchases.h"
 #import "PCFClassRatingViewController.h"
 #import "PCFAnimationModel.h"
-#import "AdWhirlManager.h"
+#import "AdManager.h"
 
 @interface PCFClassRatingsViewController ()
 {
@@ -208,7 +207,7 @@ extern BOOL initializedSocket;
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) return 70.0f;
+        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) return 70.0f;
     }
     
     return 3;
@@ -220,9 +219,9 @@ extern BOOL initializedSocket;
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) {
                 UIView *tempView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 70)];
-                [[AdWhirlManager sharedInstance] setAdViewOnView:tempView withDisplayViewController:self withPosition:AdPlacementTop];
+                [[AdManager sharedInstance] setAdViewOnView:tempView withDisplayViewController:self withPosition:AdPlacementTop];
                 return tempView;
         }
     }

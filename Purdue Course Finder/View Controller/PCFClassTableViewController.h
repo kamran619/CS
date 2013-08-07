@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AdWhirlDelegateProtocol.h"
 #import "PCFCustomAlertViewDelegate.h"
 @interface PCFClassTableViewController : UITableViewController <UISearchBarDelegate, PCFCustomAlertViewDelegate> {
     IBOutlet UIActivityIndicatorView *activityInd;

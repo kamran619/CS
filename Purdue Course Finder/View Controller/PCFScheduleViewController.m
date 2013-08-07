@@ -12,12 +12,11 @@
 #import "PCFCustomScheduleCell.h"
 #import "PCFClassModel.h"
 #import "PCFSchedueModel.h"
-#import "AdWhirlView.h"
 #import "PCFSearchTableViewController.h"
 #import "PCFInAppPurchases.h"
 #import "PCFGenerateDayView.h"
 #include "PCFFontFactory.h"
-#include "AdWhirlManager.h"
+#include "AdManager.h"
 
 @interface PCFScheduleViewController ()
 {
@@ -148,9 +147,9 @@ BOOL hasTimeConflict = NO;
     if (section == 0) {
         BOOL dontShowDayView = NO;
         if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if ([AdWhirlManager sharedInstance].adView.hidden == NO) {
+            if ([AdManager sharedInstance].adView.hidden == NO) {
                 UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 135)];
-                [[AdWhirlManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
+                [[AdManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
                 if (!savedSchedule) {
                     dontShowDayView = YES;
                     static NSString *CellIdentifier = @"PCFFavoriteHelpCell";
@@ -290,7 +289,7 @@ BOOL hasTimeConflict = NO;
 {
     if (section ==0) {
         if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if ([AdWhirlManager sharedInstance].adView.hidden == NO) return 135;
+            if ([AdManager sharedInstance].adView.hidden == NO) return 135;
             return 75;
         } return 75;
     

@@ -14,8 +14,7 @@
 #import "PCFRatingsProfessorViewController.h"
 #import "PCFCustomAlertViewTwoButtons.h"
 #import "PCFInAppPurchases.h"
-#import "AdWhirlView.h"
-#import "AdWhirlManager.h"
+#import "AdManager.h"
 
 extern BOOL initializedSocket;
 extern NSOutputStream *outputStream;
@@ -306,9 +305,9 @@ extern NSMutableArray *professors;
 {
     if (section == 0) {
         if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if ([AdWhirlManager sharedInstance].adView.hidden == NO) {
+            if ([AdManager sharedInstance].adView.hidden == NO) {
                 UIView *tempView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 70)];
-                [[AdWhirlManager sharedInstance] setAdViewOnView:tempView withDisplayViewController:self withPosition:AdPlacementTop];
+                [[AdManager sharedInstance] setAdViewOnView:tempView withDisplayViewController:self withPosition:AdPlacementTop];
                 return tempView;
             }
         }
@@ -319,7 +318,7 @@ extern NSMutableArray *professors;
 {
     if (section == 0) {
         if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if ([AdWhirlManager sharedInstance].adView.hidden == NO) {
+            if ([AdManager sharedInstance].adView.hidden == NO) {
                 return 70;
             }
         }

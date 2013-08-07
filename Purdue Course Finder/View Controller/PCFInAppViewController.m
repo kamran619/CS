@@ -11,12 +11,11 @@
 #import <StoreKit/StoreKit.h>
 #import "PCFCustomInAppCell.h"
 #import "PCFMainSearchTableViewController.h"
-#import "AdWhirlView.h"
 #import "PCFCustomAlertView.h"
 #import "PCFAnimationModel.h"
 #import "PCFInAppPurchases.h"
 #import "PCFFontFactory.h"
-#include "AdWhirlManager.h"
+#include "AdManager.h"
 @interface PCFInAppViewController ()
 
 @end
@@ -268,8 +267,8 @@
     if ([productId isEqualToString:@"REMOVE_ADS"])
     {
         // enable the pro features
-        [AdWhirlManager sharedInstance].adView.hidden = YES;
-        [AdWhirlManager sharedInstance].adView.hidden = nil;
+        [AdManager sharedInstance].adView.hidden = YES;
+        [AdManager sharedInstance].adView.hidden = nil;
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"REMOVE_ADS_PURCHASED"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }else if([productId isEqualToString:@"ONE_TIME_SNIPE_CREDIT"]) {

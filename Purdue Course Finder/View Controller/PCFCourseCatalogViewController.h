@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "PCFChooseClassTableViewController.h"
-#import "AdWhirlDelegateProtocol.h"
 
 @interface PCFCourseCatalogViewController : UIViewController 
 {

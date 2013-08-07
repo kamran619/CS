@@ -8,13 +8,12 @@
 
 #import "PCFCourseCatalogViewController.h"
 #import "PCFWebModel.h"
-#import "AdWhirlView.h"
 #import "PCFAppDelegate.h"
 #import "PCFSearchTableViewController.h"
 #import "PCFAnimationModel.h"
 #import "PCFFontFactory.h"
 #import "PCFInAppPurchases.h"
-#import "AdWhirlManager.h"
+#import "AdManager.h"
 
 @interface PCFCourseCatalogViewController ()
 
@@ -70,14 +69,14 @@ extern NSString *const MY_AD_WHIRL_APPLICATION_KEY;
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) {
         [UIView beginAnimations:@"slideDown" context:nil];
         [UIView setAnimationDuration:0.3f];
         scrollView.frame = CGRectMake(scrollView.frame.origin.x, scrollView.frame.origin.y+50, scrollView.frame.size.width, scrollView.frame.size.height);
         [UIView commitAnimations];
         //catalogName.frame = CGRectMake(catalogName.frame.origin.x, catalogName.frame.origin.y, catalogName.frame.size.width, catalogName.frame.size.height);
         //catalogLabel.frame = CGRectMake(catalogLabel.frame.origin.x, catalogLabel.frame.origin.y+50, catalogLabel.frame.size.width, catalogLabel.frame.size.height);
-        [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementTop];
+        [[AdManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementTop];
     }
 }
 

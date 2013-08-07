@@ -17,7 +17,6 @@
 #import "Reachability.h"
 #import "PCFInAppPurchases.h"
 #import "PCFMainSearchTableViewController.h"
-#import "AdWhirlView.h"
 #import "PCFCustomAlertView.h"
 #import "PCFCustomSpinner.h"
 #import "PCFCustomAlertViewTwoButtons.h"
@@ -34,7 +33,7 @@
 //Model
 #import "PCFSchedueModel.h"
 #import "KBKeyboardHandler.h"
-#import "AdWhirlManager.h"
+#import "AdManager.h"
 
 extern BOOL launchedWithPushNotification;
 extern BOOL internetActive;
@@ -549,34 +548,7 @@ NSArray *classesOffered = nil;
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 [spinner dismiss];
                                 spinner = NULL;
-                                if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-                                    if ((timesSearched++ + 1) % 3 == 0) {
-                                        /*if ([FlurryAds adReadyForSpace:@"Full Ad"]) {
-                                         [self.navigationController.navigationBar setHidden:YES];
-                                         [self.view setHidden:YES];
-                                         [FlurryAds displayAdForSpace:@"Full Ad" onView:self.view];
-                                         }
-                                         }else {*/
-                                        //UIViewController *viewController;
-                                        NSString *uniqueIdentifier = @"Ad";
-                                        NSInteger randomNumber = arc4random() % 10;
-                                        if (randomNumber % 2 == 0) {
-                                            uniqueIdentifier = [uniqueIdentifier stringByAppendingString:@"One"];
-                                        }else {
-                                            uniqueIdentifier = [uniqueIdentifier stringByAppendingString:@"Two"];
-                                        }
-                                        
-                                        id viewController = [[self storyboard] instantiateViewControllerWithIdentifier:uniqueIdentifier];
-                                        [self presentViewController:viewController animated:YES completion:nil];
-                                        //[self performSegueWithIdentifier:uniqueIdentifier sender:self];
-                                        [self performSegueWithIdentifier:@"ChooseClass" sender:self];
-                                    }else {
-                                        [AppFlood showFullscreen];
-                                        [self performSegueWithIdentifier:@"ChooseClass" sender:self];
-                                    }
-                                }else {
-                                    [self performSegueWithIdentifier:@"ChooseClass" sender:self];
-                                }
+                                [self performSegueWithIdentifier:@"ChooseClass" sender:self];
                                 //PCFChooseClassTableViewController *chooseClass = [[self storyboard] instantiateViewControllerWithIdentifier:@"ChooseClass"];
                                 //[self.navigationController pushViewController:chooseClass animated:YES];
                             });
@@ -742,6 +714,11 @@ NSArray *classesOffered = nil;
                     dependencyArray = [self checkIntermediateDependency:classesOffered];
                     if ([PCFInAppPurchases boughtRemoveAds] == NO) {
                         if ((timesSearched++ + 1) % 3 != 0) {
+                                if ([[[AdManager sharedInstance] interstitialAdView] isReady])
+                                {
+                                    [[AdManager sharedInstance] loadInterstitialOnView:self];
+                                }
+
                             /*if ([FlurryAds adReadyForSpace:@"Full Ad"]) {
                                 [self.navigationController.navigationBar setHidden:YES];
                                 [self.view setHidden:YES];
@@ -908,8 +885,8 @@ NSArray *classesOffered = nil;
     [internetReachable startNotifier];
     //[FlurryAds setAdDelegate:self];
     // We will show banner and interstitial integrations here.
-    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
-        [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom];
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) {
+        [[AdManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom];
     }
 }
 

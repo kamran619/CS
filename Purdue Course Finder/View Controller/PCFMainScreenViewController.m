@@ -8,7 +8,6 @@
 
 #import "PCFMainScreenViewController.h"
 #import "PCFAppDelegate.h"
-#import "AdWhirlView.h"
 #import "PCFInAppPurchases.h"
 #import "PCFAnnouncementModel.h"
 #import <QuartzCore/QuartzCore.h>
@@ -17,7 +16,8 @@
 #import "PCFFavoritesViewController.h"
 #import "PCFFontFactory.h"
 #import "PCFCustomAlertViewTwoButtons.h"
-#import "AdWhirlManager.h"
+#import "AdManager.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 @interface PCFMainScreenViewController ()
 
@@ -46,10 +46,20 @@ extern NSDictionary *pushInfo;
     return self;
 }
 
+-(IBAction)showUserRatings:(id)sender
+{
+    if (FBSession.activeSession.isOpen) {
+        [self performSegueWithIdentifier:@"Ratings5" sender:self];
+    }else {
+        PCFAppDelegate *delegate = [UIApplication sharedApplication].delegate;
+        [delegate openSession];
+    }
+}
 - (void)viewDidLoad
 {
     
     [super viewDidLoad];
+    
     incompleteBuffer = NO;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mainScreenPushed:)];
     [tap setNumberOfTapsRequired:1];
@@ -63,7 +73,7 @@ extern NSDictionary *pushInfo;
     // Do any additional setup after loading the view.
     if ([PCFInAppPurchases boughtRemoveAds] == NO) {
         NSLog(@"Ads enabled");
-        //[[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom animated:NO];
+        //[[AdManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom animated:NO];
     }else {
         NSLog(@"Ads disabled");
     }
@@ -147,8 +157,8 @@ extern NSDictionary *pushInfo;
 {
     [super viewWillAppear:animated];
     [self setTitle:@"Purdue Course Sniper"];
-    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
-        [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom];
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) {
+        [[AdManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom];
     }
 }
 

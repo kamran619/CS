@@ -16,10 +16,9 @@
 #import <QuartzCore/QuartzCore.h>
 #import "PCFInAppPurchases.h"
 #import "PCFMainScreenViewController.h"
-#import "AdWhirlView.h"
 #import "PCFFontFactory.h"
 #import "PCFAnimationModel.h"
-#import "AdWhirlManager.h"
+#import "AdManager.h"
 
 @interface PCFRatingsProfessorViewController ()
 
@@ -164,7 +163,7 @@ extern UIColor *customBlue;
 {
     [super viewWillAppear:animated];
     [self.tableViewOne reloadData];
-    [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementTop];
+    [[AdManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementTop];
 }
 
 -(void)reloadReviews:(NSNotification *)notification

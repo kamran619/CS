@@ -13,9 +13,8 @@
 #import "PCFCustomSpinner.h"
 #import "PCFAnimationModel.h"
 #import "KBKeyboardHandler.h"
-#import "AdWhirlView.h"
 #import "PCFInAppPurchases.h"
-#import "AdWhirlManager.h"
+#import "AdManager.h"
 
 @interface PCFLeaveProfessorRatingViewController ()
 
@@ -56,8 +55,8 @@ extern BOOL initializedSocket;
 {
     [super viewDidAppear:animated];
     if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-        if ([AdWhirlManager sharedInstance].adView.hidden == NO) {
-            [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom];
+        if ([AdManager sharedInstance].adView.hidden == NO) {
+            [[AdManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementBottom];
         }
     }
 }

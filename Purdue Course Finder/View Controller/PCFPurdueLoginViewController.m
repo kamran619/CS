@@ -10,11 +10,10 @@
 #import "PCFWebModel.h"
 #import "PCFTabBarController.h"
 #import "PCFAppDelegate.h"
-#import "AdWhirlView.h"
 #import "PCFSearchTableViewController.h"
 #import "Reachability.h"
 #import "PCFInAppPurchases.h"
-#import "AdWhirlManager.h"
+#import "AdManager.h"
 
 @interface PCFPurdueLoginViewController ()
 {
@@ -46,13 +45,13 @@ extern BOOL internetActive;
     if (screenBounds.size.height == 480) {
         //iphone 4,4s
         //done
-        if ([PCFInAppPurchases boughtRemoveAds] == YES && [AdWhirlManager sharedInstance].adView.hidden == YES) {
+        if ([PCFInAppPurchases boughtRemoveAds] == YES && [AdManager sharedInstance].adView.hidden == YES) {
             webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 422)];
         }else {
             webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 50, 320, 372)];
         }
     }else if(screenBounds.size.height == 568) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == YES) {
+        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == YES) {
             webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 510)];
         }else {
             webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 50, 320, 460)];
@@ -75,8 +74,8 @@ extern BOOL internetActive;
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
-       [[AdWhirlManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementTop];
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) {
+       [[AdManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementTop];
         CGRect webFrame = webView.frame;
         webView.frame = CGRectMake(0, 50, 320, webFrame.size.height-50);
         webView.hidden = NO;

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AdWhirlDelegateProtocol.h"
-@interface PCFMainScreenViewController : UIViewController <AdWhirlDelegate, NSStreamDelegate>
 
+@interface PCFMainScreenViewController : UIViewController <NSStreamDelegate>
+-(IBAction)showUserRatings:(id)sender;
 @end

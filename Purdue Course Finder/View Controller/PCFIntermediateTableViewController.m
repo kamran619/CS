@@ -10,13 +10,11 @@
 #import "PCFObject.h"
 #import "PCFInAppPurchases.h"
 #import "PCFFontFactory.h"
-#import "AdWhirlView.h"
 #import "PCFClassModel.h"
 #import "PCFIntermediateTableViewControllerTwo.h"
 #import "PCFChooseClassTableViewController.h"
-#import "AdWhirlView.h"
 #import "PCFSchedueModel.h"
-#import "AdWhirlManager.h"
+#import "AdManager.h"
 #import "PCFInAppPurchases.h"
 
 @interface PCFIntermediateTableViewController ()
@@ -145,9 +143,9 @@ extern NSMutableArray *classesOffered;
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) {
             UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
-            [[AdWhirlManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
+            [[AdManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
             return view;
         }
             UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 10)];
@@ -160,7 +158,7 @@ extern NSMutableArray *classesOffered;
 {
     if (section == 0) {
         if ([PCFInAppPurchases boughtRemoveAds] == NO) {
-            if ([AdWhirlManager sharedInstance].adView.hidden == NO) {
+            if ([AdManager sharedInstance].adView.hidden == NO) {
                 return 50;
             }
             return 10;

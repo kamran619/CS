@@ -15,9 +15,11 @@
 #import "PCFClassModel.h"
 #import "PCFRateView.h"
 #import <MapKit/MapKit.h>
-#import "AdWhirlView.h"
 #import "PCFFontFactory.h"
 #import "AppFlood.h"
+#import "FTUEViewController.h"
+#import "Helpers.h"
+
 
 #define IS_WIDESCREEN ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
 #define IS_IPHONE ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPhone" ] )
@@ -136,42 +138,42 @@ NSDictionary *pushInfo = nil;
         return YES;
     }
     
-    //show app rating
-    int showApp = [[NSUserDefaults standardUserDefaults] integerForKey:@"showAppRate"];
-    if (showApp == 0) {
-        if (appCount % 3 == 0) {
-            PCFRateView *view = [[PCFRateView alloc] initRateView:CGRectMake(0, 0, 300, 300) :@"Course Sniper" :@"Would you please take a moment to rate Course Sniper? I would love some feedback." :@"Rate app" :@"Remind me later" :@"Never remind me again"];
-            [view setDelegate:self];
-            [view show];
-        }
-    }
-    //manually load first view controller
-    self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle:nil];
-    
-    PCFMainScreenViewController *viewController;
-    
-    
-    if([[UIDevice currentDevice]userInterfaceIdiom]==UIUserInterfaceIdiomPhone)
-    {
-        //iphone
-        if ([[UIScreen mainScreen] bounds].size.height == 568 || [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+        //manually load first view controller
+        self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+        //load storyboard
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle:nil];
+        
+        PCFMainScreenViewController *viewController;
+        
+        if([[UIDevice currentDevice]userInterfaceIdiom]==UIUserInterfaceIdiomPhone)
         {
-            //iphone 5
-            viewController = [storyboard instantiateViewControllerWithIdentifier:@"MSiPhone5"];
+            //iphone
+            if ([[UIScreen mainScreen] bounds].size.height == 568 || [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+            {
+                //iphone 5
+                viewController = [storyboard instantiateViewControllerWithIdentifier:@"MSiPhone5"];
+            }
+            else
+            {
+                viewController = [storyboard instantiateViewControllerWithIdentifier:@"MSiPhone4"];
+                //iphone 3.5 inch screen
+            }
         }
-        else
-        {
-            viewController = [storyboard instantiateViewControllerWithIdentifier:@"MSiPhone4"];
-            //iphone 3.5 inch screen
-        }
+        
+        self.navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    FTUEViewController *ftueVC;
+    if ([Helpers hasRanAppBefore] == NO && !(FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded)) {
+        NSString *deviceType = ([Helpers isPhone5]) ? @"FTUEViewController5" : @"FTUEViewController";
+        ftueVC = [[FTUEViewController alloc] initWithNibName:deviceType bundle:[NSBundle mainBundle]];
+        
+    }else {
+        id delegate =  [UIApplication sharedApplication].delegate;
+        [delegate openSession];
     }
-    
-    UINavigationController *controller = [[UINavigationController alloc] initWithRootViewController:viewController];
-    self.window.rootViewController = controller;
-    [self.window makeKeyAndVisible];
-
-    return YES;
+        self.window.rootViewController = self.navigationController;
+        [self.window makeKeyAndVisible];
+        if (ftueVC) [self.navigationController presentViewController:ftueVC animated:NO completion:nil];
+        return YES;
 }
 
 -(void)clickedNo
@@ -305,6 +307,7 @@ NSDictionary *pushInfo = nil;
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+    [FBSession.activeSession handleDidBecomeActive];
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     int appCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"appCount"];
     //increment app count
@@ -318,4 +321,65 @@ NSDictionary *pushInfo = nil;
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+#pragma mark FB Interaction
+-(void) openSession
+{
+    [FBSession openActiveSessionWithReadPermissions:[NSArray arrayWithObjects:@"user_about_me",@"friends_about_me",@"friends_education_history", nil] allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+        [self sessionStateChanged:session state:status error:error];
+    }];
+}
+
+- (void)sessionStateChanged:(FBSession *)session
+                      state:(FBSessionState) state
+                      error:(NSError *)error
+{
+    switch (state) {
+        case FBSessionStateOpen: {
+            UIViewController *topViewController = self.navigationController.topViewController;
+            if ([[topViewController modalViewController]
+                 isKindOfClass:[FTUEViewController class]]) {
+                [topViewController dismissModalViewControllerAnimated:YES];
+            }
+        }
+            break;
+        case FBSessionStateClosed:
+        case FBSessionStateClosedLoginFailed:
+        {
+            [FBSession.activeSession closeAndClearTokenInformation];
+             NSString *deviceType = ([Helpers isPhone5]) ? @"FTUEViewController5" : @"FTUEViewController";
+            FTUEViewController *FTUEVC = [[FTUEViewController alloc] initWithNibName:deviceType bundle:nil];
+            UIViewController *topViewController = self.navigationController.topViewController;
+            if (![[topViewController modalViewController]
+                 isKindOfClass:[FTUEViewController class]]) {
+                [topViewController presentViewController:FTUEVC animated:YES completion:nil];
+            }
+
+            // Once the user has logged in, we want them to
+            // be looking at the root view.
+            break;
+        }
+        default:
+            break;
+    }
+    
+    if (error) {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Error"
+                                  message:error.localizedDescription
+                                  delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
+    }
+}
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation
+{
+    return [FBSession.activeSession handleOpenURL:url];
+}
+
 @end

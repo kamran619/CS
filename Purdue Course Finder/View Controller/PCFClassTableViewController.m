@@ -13,12 +13,11 @@
 #import "PCFWebModel.h"
 #import "PCFObject.h"
 #import "PCFCRNViewController.h"
-#import "AdWhirlView.h"
 #import "Reachability.h"
 #import "PCFCustomAlertViewTwoButtons.h"
 #import "PCFFontFactory.h"
 #import "PCFInAppPurchases.h"
-#import "AdWhirlManager.h"
+#import "AdManager.h"
 
 @interface PCFClassTableViewController ()
 {
@@ -77,16 +76,16 @@ extern NSArray *arraySubjects;
 }
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) {
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
-        [[AdWhirlManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
+        [[AdManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
         return view;
     }
     return nil;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdWhirlManager sharedInstance].adView.hidden == NO) return 50;
+    if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) return 50;
     return 0;
 }
 
