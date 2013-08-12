@@ -62,10 +62,9 @@ extern BOOL initializedSocket;
     
 }
 
-
-- (void)viewDidLoad
+-(void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidLoad];
+    [super viewWillAppear:animated];
     if ([FBSession.activeSession isOpen]) {
         [[FBRequest requestForMe] startWithCompletionHandler:^(FBRequestConnection *connection, NSDictionary <FBGraphUser> *user, NSError *error) {
             if (!error) {
@@ -79,6 +78,10 @@ extern BOOL initializedSocket;
             }
         }];
     }
+}
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
     //[self setupBackButton];
     //register for notifications
     UISwipeGestureRecognizer *swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedUp:)];

@@ -278,6 +278,7 @@
 								<string key="NSFrame">{{9, 60}, {289, 80}}</string>
 								<reference key="NSSuperview" ref="640988907"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<reference key="IBUIBackgroundColor" ref="264254482"/>
 								<bool key="IBUIOpaque">NO</bool>
@@ -662,7 +663,7 @@
 				<reference key="IBUIBackgroundColor" ref="264254482"/>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<reference key="IBUIContentView" ref="640988907"/>
-				<string key="IBUIReuseIdentifier">PCFCustomComment</string>
+				<string key="IBUIReuseIdentifier">PCFCourseCommentCell</string>
 				<real value="145" key="IBUIRowHeight"/>
 			</object>
 		</array>

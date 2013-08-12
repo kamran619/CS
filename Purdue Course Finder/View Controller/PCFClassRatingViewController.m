@@ -308,7 +308,7 @@ extern NSOutputStream *outputStream;
         //[cell setBackgroundView:imgView];
         
         PCFRateModel *rateObject = [courseReviews objectAtIndex:indexPath.section];
-        [cell.profilePicture setProfileID:rateObject.identifier];
+        if (![cell.profilePicture.profileID isEqualToString:rateObject.identifier]) [cell.profilePicture setProfileID:rateObject.identifier];
         [cell.userName setText:rateObject.username];
         [cell.date setText:rateObject.date];
         [cell.professor setText:rateObject.course];
@@ -356,9 +356,7 @@ extern NSOutputStream *outputStream;
 {
     if ([[cellState objectAtIndex:[gesture view].tag] integerValue] == EXPANDED) return;
     [cellState replaceObjectAtIndex:gesture.view.tag withObject:[NSNumber numberWithInt:EXPANDED]];
-    [self.tableViewTwo beginUpdates];
-    [self.tableViewTwo reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:gesture.view.tag]] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [self.tableViewTwo endUpdates];
+    [self.tableViewTwo reloadData];
 }
 
 -(void)cellSwipedLeft:(UISwipeGestureRecognizer *)gesture
@@ -371,9 +369,7 @@ extern NSOutputStream *outputStream;
         [cell.comment setAlpha:1.0f];
         [cell.viewReview setAlpha:0.0f];
     } completion:^(BOOL finished) {
-        [self.tableViewTwo beginUpdates];
-        [self.tableViewTwo reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:gesture.view.tag]] withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableViewTwo endUpdates];
+        [self.tableViewTwo reloadData];
     }];
     
 }

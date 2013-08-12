@@ -369,7 +369,7 @@ extern UIColor *customBlue;
         [imgView setImage:[UIImage imageNamed:@"1slot2.png"]];
         //[cell setBackgroundView:imgView];
         //get picture
-        [cell.profilePicture setProfileID:rateObject.identifier];
+        if (![cell.profilePicture.profileID isEqualToString:rateObject.identifier]) [cell.profilePicture setProfileID:rateObject.identifier];
         [cell.userName setText:rateObject.username];
         [cell.date setText:rateObject.date];
         [cell.course setText:rateObject.course];

@@ -346,8 +346,18 @@ NSDictionary *pushInfo = nil;
             
         case FBSessionStateClosedLoginFailed:
         {
+            [FBSession.activeSession closeAndClearTokenInformation];
+            NSString *deviceType = ([Helpers isPhone5]) ? @"FTUEViewController5" : @"FTUEViewController";
+            FTUEViewController *FTUEVC = [[FTUEViewController alloc] initWithNibName:deviceType bundle:nil];
+            UIViewController *topViewController = self.navigationController.topViewController;
+            if (![[topViewController modalViewController]
+                  isKindOfClass:[FTUEViewController class]]) {
+                [topViewController presentViewController:FTUEVC animated:YES completion:nil];
+            }
+
             UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"App Disabled" message:@"Your Facebook settings prevent us from working! Open your Settings app, goto the Facebook section and turn ON Course Sniper." delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil, nil];
             [view show];
+            break;
         }
             
         case FBSessionStateClosed:

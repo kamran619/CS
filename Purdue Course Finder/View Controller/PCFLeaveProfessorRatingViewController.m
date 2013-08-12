@@ -64,6 +64,29 @@ extern BOOL initializedSocket;
         }
     }
 }
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self checkIfLoggedIn];
+}
+
+-(void)checkIfLoggedIn
+{
+    if ([FBSession.activeSession isOpen]) {
+        [[FBRequest requestForMe] startWithCompletionHandler:^(FBRequestConnection *connection, NSDictionary <FBGraphUser> *user, NSError *error) {
+            if (!error) {
+                name = user.name;
+                identifier = user.id;
+            }else {
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"FB ERROR" message:error.description delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alertView show];
+                id delegate = [UIApplication sharedApplication].delegate;
+                [delegate openSession];
+            }
+        }];
+    }
+}
 -(void)popViewController
 {
     [self.navigationController popViewControllerAnimated:YES];
@@ -109,19 +132,6 @@ extern BOOL initializedSocket;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    if ([FBSession.activeSession isOpen]) {
-        [[FBRequest requestForMe] startWithCompletionHandler:^(FBRequestConnection *connection, NSDictionary <FBGraphUser> *user, NSError *error) {
-            if (!error) {
-                name = user.name;
-                identifier = user.id;
-            }else {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"FB ERROR" message:error.description delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [alertView show];
-                id delegate = [UIApplication sharedApplication].delegate;
-                [delegate openSession];
-            }
-        }];
-    }
     //[self setupBackButton];
     //register for notifications
     UISwipeGestureRecognizer *swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedUp:)];
@@ -288,6 +298,10 @@ extern BOOL initializedSocket;
     spinner = [[PCFCustomSpinner alloc] initWithFrame:CGRectMake(0, 0, 275, 200) :@"Submitting review..."];
     [spinner show];
     textView.text = [textView.text stringByReplacingOccurrencesOfString:@";" withString:@"*"];
+    if (!identifier) {
+        [self checkIfLoggedIn];
+        return;
+    }
     NSString *response = [NSString stringWithFormat:@"_SUBMIT_PROFESSOR_REVIEW*%@;%@;%@;%d;%d;%d;%d;%d;%d;%@;%@;%@;%@\n", name,currentDate,textView.text,starEasiness.tag,starClarity.tag,starHelpfulness.tag,starInterestLevel.tag,starTextbookUse.tag,starOverall.tag, textField.text, professor.text, termTextField.text, identifier];
     dispatch_async(task, ^{
         NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
