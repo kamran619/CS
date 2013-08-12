@@ -17,6 +17,10 @@
 #import "AdManager.h"
 
 @interface PCFLeaveProfessorRatingViewController ()
+{
+    NSString *name;
+    NSString *identifier;
+}
 
 @end
 
@@ -105,6 +109,19 @@ extern BOOL initializedSocket;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    if ([FBSession.activeSession isOpen]) {
+        [[FBRequest requestForMe] startWithCompletionHandler:^(FBRequestConnection *connection, NSDictionary <FBGraphUser> *user, NSError *error) {
+            if (!error) {
+                name = user.name;
+                identifier = user.id;
+            }else {
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"FB ERROR" message:error.description delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alertView show];
+                id delegate = [UIApplication sharedApplication].delegate;
+                [delegate openSession];
+            }
+        }];
+    }
     //[self setupBackButton];
     //register for notifications
     UISwipeGestureRecognizer *swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedUp:)];
@@ -167,37 +184,6 @@ extern BOOL initializedSocket;
     NSInteger actualPage = lround(fractionalPage);
     [self.pageControl setCurrentPage:actualPage];
 }
-
-/*- (void)keyboardWasShown:(NSNotification *)notification
-{
-    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0f, 0.0f, keyboardSize.height, 0.0f);
-    self.scrollView.contentInset = contentInsets;
-    self.scrollView.scrollIndicatorInsets = contentInsets;
-    NSInteger offset = 40;
-    if (activeTextField.tag == 1) offset = 90;
-    CGRect aRect = self.view.frame;
-    aRect.size.height -= keyboardSize.height;
-    if (!CGRectContainsPoint(aRect, activeTextField.frame.origin)) {
-        CGPoint scrollPoint = CGPointMake(0.0f, activeTextField.frame.origin.y - (keyboardSize.height - offset));
-        [UIView animateWithDuration:.5 animations:^{
-            [self.scrollView setContentOffset:scrollPoint];
-        }];
-    }
-    
-}
-
-- (void) keyboardWillHide:(NSNotification *)notification {
-    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
-    [UIView animateWithDuration:.5 animations:^{
-        self.scrollView.contentInset = contentInsets;
-        self.scrollView.scrollIndicatorInsets = contentInsets;
-    }];
-
-}*/
-
-
-
 
 -(void)clickedYes
 {
@@ -302,7 +288,7 @@ extern BOOL initializedSocket;
     spinner = [[PCFCustomSpinner alloc] initWithFrame:CGRectMake(0, 0, 275, 200) :@"Submitting review..."];
     [spinner show];
     textView.text = [textView.text stringByReplacingOccurrencesOfString:@";" withString:@"*"];
-    NSString *response = [NSString stringWithFormat:@"_SUBMIT_PROFESSOR_REVIEW*%@;%@;%@;%d;%d;%d;%d;%d;%d;%@;%@;%@\n", username.text,currentDate,textView.text,starEasiness.tag,starClarity.tag,starHelpfulness.tag,starInterestLevel.tag,starTextbookUse.tag,starOverall.tag, textField.text, professor.text, termTextField.text];
+    NSString *response = [NSString stringWithFormat:@"_SUBMIT_PROFESSOR_REVIEW*%@;%@;%@;%d;%d;%d;%d;%d;%d;%@;%@;%@;%@\n", name,currentDate,textView.text,starEasiness.tag,starClarity.tag,starHelpfulness.tag,starInterestLevel.tag,starTextbookUse.tag,starOverall.tag, textField.text, professor.text, termTextField.text, identifier];
     dispatch_async(task, ^{
         NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
         if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
@@ -326,6 +312,7 @@ extern BOOL initializedSocket;
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
+    if (textField.text.length != 0) [self performSelector:@selector(scrollToProperArea) withObject:nil afterDelay:0.2f];
     return YES;
 }
 
@@ -340,19 +327,25 @@ extern BOOL initializedSocket;
     }else if(location.x >= 4.5 && location.x <= 42) {
         [sender setBackgroundImage:[UIImage imageNamed:@"star-1.png"] forState:UIControlStateNormal];
         [sender setTag:1];
-    }else if(location.x >= 50.5 && location.x <= 89.5) {
+    }else if(location.x >= 50.5 && location.x <= 80.0) {
         [sender setBackgroundImage:[UIImage imageNamed:@"star-2.png"] forState:UIControlStateNormal];
         [sender setTag:2];
-    }else if(location.x >= 98 && location.x <= 135.5) {
+    }else if(location.x >= 80.1 && location.x <= 115.5) {
         [sender setBackgroundImage:[UIImage imageNamed:@"star-3.png"] forState:UIControlStateNormal];
         [sender setTag:3];
-    }else if(location.x >= 143.5 && location.x <= 183.5) {
+    }else if(location.x >= 116.5 && location.x <= 149.5) {
         [sender setBackgroundImage:[UIImage imageNamed:@"star-4.png"] forState:UIControlStateNormal];
         [sender setTag:4];
-    }else if(location.x >= 189.5 && location.x <= 227.5) {
+    }else if(location.x >= 149.6 && location.x <= 180) {
         [sender setBackgroundImage:[UIImage imageNamed:@"star-5.png"] forState:UIControlStateNormal];
         [sender setTag:5];
     }
+    [self performSelector:@selector(scrollToProperArea) withObject:nil afterDelay:0.2f];
+}
+
+-(void)scrollToProperArea
+{
+        [self.scrollView setContentOffset:CGPointMake(320 + (self.pageControl.currentPage*320), 0) animated:YES];
 }
 
 

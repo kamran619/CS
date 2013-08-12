@@ -31,8 +31,15 @@
     NSString *totalTextbookUse;
     NSString *totalOverall;
     NSString *numReviews;
+    NSMutableArray *cellState;
 }
 @end
+
+#define TABLEVIEW_TWO_HEIGHT self.view.bounds.size.height
+#define MINIMUM_CELL_HEIGHT 145
+#define EXPANDED 1
+#define NORMAL 0
+
 extern UIColor *customBlue;
 extern BOOL initializedSocket;
 extern NSOutputStream *outputStream;
@@ -63,28 +70,43 @@ extern NSOutputStream *outputStream;
 {
     [super viewDidLoad];
     [self setupBackButton];
-    [self.navigationItem setTitle:classNumber];
+    [self.navigationItem setTitle:classTitle];
+    [self.scrollView setScrollEnabled:NO];
+    [self.scrollView setPagingEnabled:YES];
+    [self.scrollView setDelegate:self];
     [self loadReviews];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleResponse:) name:@"ServerClassReceived" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleComments:) name:@"ServerClassCommentsReceived" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadReviews:) name:@"ReloadCommentReviews" object:nil];
     isLoading = YES;
     isLoadingComments = YES;
-    tableViewTwo = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, 320, self.view.bounds.size.height) style:UITableViewStyleGrouped];
+    UILabel *label;
+    if ([PCFInAppPurchases boughtRemoveAds] == YES) {
+        tableViewTwo = [[UITableView alloc] initWithFrame:CGRectMake(320, 25, 320, TABLEVIEW_TWO_HEIGHT) style:UITableViewStyleGrouped];
+        label = [[UILabel alloc] initWithFrame:CGRectMake(321, 10, 320, 30)];
+        [self.scrollView setContentSize:CGSizeMake(320*2, self.view.frame.size.height)];
+    }else {
+        [self.scrollView setFrame:CGRectMake(0, 50, 320, self.view.frame.size.height - 50)];
+        tableViewTwo = [[UITableView alloc] initWithFrame:CGRectMake(320, 10, 320, TABLEVIEW_TWO_HEIGHT) style:UITableViewStyleGrouped];
+        label = [[UILabel alloc] initWithFrame:CGRectMake(320, 0, 320, 30)];
+        [self.scrollView setContentSize:CGSizeMake(320*2, self.view.frame.size.height-50)];
+    }
+    [tableViewOne setScrollEnabled:NO];
     [tableViewTwo setSectionFooterHeight:0.0f];
     [tableViewTwo setDataSource:self];
     [tableViewTwo setDelegate:self];
     [tableViewTwo setTag:2];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, 320, 30)];
+    [self.scrollView addSubview:tableViewTwo];
+    [self.scrollView addSubview:label];
     [label setTextColor:[UIColor whiteColor]];
     [label setTextAlignment:NSTextAlignmentCenter];
     [label setFont:[PCFFontFactory droidSansFontWithSize:22]];
     [label setText:@"User Reviews"];
     [label setBackgroundColor:[UIColor clearColor]];
     [tableViewTwo setTableHeaderView:label];
-    [tableViewTwo setRowHeight:136];
     [tableViewTwo setSectionFooterHeight:.01f];
     [tableViewTwo setSectionHeaderHeight:.01f];
+    [tableViewTwo setAllowsSelection:NO];
     [self.navigationController.navigationItem setTitle:classNumber];
     [tableViewTwo setAllowsSelection:NO];
     UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.tableViewOne.frame];
@@ -92,8 +114,16 @@ extern NSOutputStream *outputStream;
     [self.tableViewOne setBackgroundView:imgView];
     imgView = [[UIImageView alloc] initWithFrame:self.tableViewTwo.frame];
     [imgView setImage:[UIImage imageNamed:@"background_full.png"]];
+    [self.scrollView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"background_full.png"]]];
     [self.tableViewTwo setBackgroundView:imgView];
     
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.tableViewOne reloadData];
+    [[AdManager sharedInstance] setAdViewOnView:self.view withDisplayViewController:self withPosition:AdPlacementTop];
 }
 
 -(void)reloadReviews:(NSNotification *)notification
@@ -132,9 +162,15 @@ extern NSOutputStream *outputStream;
         [self.tableViewOne reloadData];
         return;
     }
+    
+    cellState = [[NSMutableArray alloc] initWithCapacity:data.count];
+    for (int i = 0; i < data.count; i++) {
+        [cellState addObject:[NSNumber numberWithInt:NORMAL]];
+    }
+    
     for (int i = 0; i < data.count; i++) {
         NSDictionary *results = [data objectAtIndex:i];
-        NSString *name, *date, *message, *easiness, *funness, *usefulness, *interestLevel,*bookUse,*overall, *professor, *term;
+        NSString *name, *date, *message, *easiness, *funness, *usefulness, *interestLevel,*bookUse,*overall, *professor, *term, *identifier;
         name = [results objectForKey:@"name"];
         date = [results objectForKey:@"date"];
         professor = [results objectForKey:@"professor"];
@@ -146,10 +182,11 @@ extern NSOutputStream *outputStream;
         bookUse = [results objectForKey:@"textbookUse"];
         overall = [results objectForKey:@"overall"];
         term = [results objectForKey:@"term"];
+        identifier = [results objectForKey:@"identifier"];
         //putting usefulness in helpfulness spot
         //putting funness in clarity stop
         //putting professor in course spot
-        PCFRateModel *obj = [[PCFRateModel alloc] initWithData:name date:date message:message helpfulness:usefulness clarity:funness easiness:easiness interestLevel:interestLevel textbookUse:bookUse overall:overall course:professor term:term];
+        PCFRateModel *obj = [[PCFRateModel alloc] initWithData:name date:date message:message helpfulness:usefulness clarity:funness easiness:easiness interestLevel:interestLevel textbookUse:bookUse overall:overall course:professor term:term identifier:identifier];
         if (!courseReviews) courseReviews = [[NSMutableArray alloc] initWithCapacity:1];
         [courseReviews addObject:obj];
 
@@ -268,9 +305,10 @@ extern NSOutputStream *outputStream;
         }
         UIImageView *imgView = [[UIImageView alloc] initWithFrame:cell.frame];
         [imgView setImage:[UIImage imageNamed:@"1slot2.png"]];
-        [cell setBackgroundView:imgView];
+        //[cell setBackgroundView:imgView];
         
         PCFRateModel *rateObject = [courseReviews objectAtIndex:indexPath.section];
+        [cell.profilePicture setProfileID:rateObject.identifier];
         [cell.userName setText:rateObject.username];
         [cell.date setText:rateObject.date];
         [cell.professor setText:rateObject.course];
@@ -284,19 +322,60 @@ extern NSOutputStream *outputStream;
                 }
             }
         }
-        CGSize size = [rateObject.message sizeWithFont:[PCFFontFactory droidSansFontWithSize:11] constrainedToSize:CGSizeMake(290, 100000)];
-        [cell.comment setFrame:CGRectMake(cell.comment.frame.origin.x, cell.comment.frame.origin.y, size.width, size.height)];
-        [cell.comment setBaselineAdjustment:UIBaselineAdjustmentAlignBaselines];
-        [cell.comment setPreferredMaxLayoutWidth:290];
-        [cell.comment setLineBreakMode:NSLineBreakByWordWrapping];
+        if ([[cellState objectAtIndex:indexPath.section] integerValue] == NORMAL) {
+            CGSize size = [rateObject.message sizeWithFont:[PCFFontFactory droidSansFontWithSize:11] constrainedToSize:CGSizeMake(290, 100000)];
+            [cell.comment setFrame:CGRectMake(cell.comment.frame.origin.x, cell.comment.frame.origin.y, size.width, size.height)];
+            [cell.comment setBaselineAdjustment:UIBaselineAdjustmentAlignBaselines];
+            //[cell.comment setPreferredMaxLayoutWidth:290];
+            [cell.comment setLineBreakMode:NSLineBreakByWordWrapping];
+        }else {
+            [UIView animateWithDuration:0.4f animations:^{
+                [cell.comment setAlpha:0.0f];
+                [cell.viewReview setAlpha:1.0f];
+            }];
+        }
         [cell.starFunness setBackgroundImage:[self getImageForStars:rateObject.totalClarity] forState:UIControlStateNormal];
         [cell.starEasiness setBackgroundImage:[self getImageForStars:rateObject.totalEasiness] forState:UIControlStateNormal];
         [cell.starUsefulness setBackgroundImage:[self getImageForStars:rateObject.totalHelpfulness] forState:UIControlStateNormal];
         [cell.starInterestLevel setBackgroundImage:[self getImageForStars:rateObject.totalInterestLevel] forState:UIControlStateNormal];
         [cell.starOverall setBackgroundImage:[self getImageForStars:rateObject.totalOverall] forState:UIControlStateNormal];
         [cell.starTextbookUse setBackgroundImage:[self getImageForStars:rateObject.totalTextbookUse] forState:UIControlStateNormal];
+        
+        UISwipeGestureRecognizer *swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwipedLeft:)];
+        [swipeGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
+        [cell setTag:indexPath.section];
+        UISwipeGestureRecognizer *swipeGestureRecognizerLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwipedRight:)];
+        [swipeGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
+        [cell addGestureRecognizer:swipeGestureRecognizerLeft];
+        [cell addGestureRecognizer:swipeGestureRecognizer];
         return cell;
     }
+}
+
+-(void)cellSwipedRight:(UISwipeGestureRecognizer *)gesture
+{
+    if ([[cellState objectAtIndex:[gesture view].tag] integerValue] == EXPANDED) return;
+    [cellState replaceObjectAtIndex:gesture.view.tag withObject:[NSNumber numberWithInt:EXPANDED]];
+    [self.tableViewTwo beginUpdates];
+    [self.tableViewTwo reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:gesture.view.tag]] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tableViewTwo endUpdates];
+}
+
+-(void)cellSwipedLeft:(UISwipeGestureRecognizer *)gesture
+{
+    if ([[cellState objectAtIndex:[gesture view].tag] integerValue] == NORMAL) return;
+    [cellState replaceObjectAtIndex:gesture.view.tag withObject:[NSNumber numberWithInt:NORMAL]];
+    PCFCustomProfessorCommentCell *cell = (PCFCustomProfessorCommentCell*)gesture.view;
+    
+    [UIView animateWithDuration:0.1f animations:^{
+        [cell.comment setAlpha:1.0f];
+        [cell.viewReview setAlpha:0.0f];
+    } completion:^(BOOL finished) {
+        [self.tableViewTwo beginUpdates];
+        [self.tableViewTwo reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:gesture.view.tag]] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableViewTwo endUpdates];
+    }];
+    
 }
 
 -(UIImage *)getImageForStars:(NSString *)str
@@ -344,6 +423,12 @@ extern NSOutputStream *outputStream;
     return  1;
 }
 
+-(void)scrollToReviews
+{
+    [self.scrollView scrollRectToVisible:CGRectMake(320, 0, self.scrollView.frame.size.width, self.scrollView.frame.size.height) animated:YES];
+    [self.scrollView setScrollEnabled:NO];
+}
+
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     if (section == 0 && tableView.tag == 0) {
@@ -351,7 +436,11 @@ extern NSOutputStream *outputStream;
             return  activityIndicator;
         }else if (isLoading == NO) {
             if (isLoadingComments == NO && courseReviews.count > 0) {
-                return tableViewTwo;
+                UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 10, 30, 30)];
+                [button setTintColor:[UIColor whiteColor]];
+                [button setTitle:@"See Reviews" forState:UIControlStateNormal];
+                [button addTarget:self action:@selector(scrollToReviews) forControlEvents:UIControlEventTouchUpInside];
+                return button;
             }else if (isLoadingComments == YES){
                 UIView *subView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
                 UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(145, 10, 36, 36)];
@@ -379,54 +468,27 @@ extern NSOutputStream *outputStream;
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     if (tableView.tag == 0) {
-        if (isLoadingComments == NO && courseReviews.count > 0) return tableViewTwo.frame.size.height + 50;
+        if (isLoadingComments == NO && courseReviews.count > 0) return 40;
     }
     return 5;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView.tag == 2) {
+        if ([[cellState objectAtIndex:indexPath.section] integerValue] == EXPANDED) return MINIMUM_CELL_HEIGHT;
         PCFRateModel *model = [courseReviews objectAtIndex:indexPath.section];
         CGSize size = [model.message sizeWithFont:[PCFFontFactory droidSansFontWithSize:11] constrainedToSize:CGSizeMake(290, 100000)];
-        return (93 + size.height + 10);
+        return (61 + size.height + 10);
     }else {
         return tableView.rowHeight;
     }
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    if (section == 0 && tableView.tag == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds] == NO && [AdManager sharedInstance].adView.hidden == NO) {
-                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 80)];
-                [[AdManager sharedInstance] setAdViewOnView:view withDisplayViewController:self withPosition:AdPlacementTop];
-                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 60, 320, 30)];
-                [label setNumberOfLines:0];
-                [label setText:classTitle];
-                [label setFont:[PCFFontFactory droidSansFontWithSize:14]];
-                [label setTextColor:[UIColor whiteColor]];
-                [label setBackgroundColor:[UIColor clearColor]];
-                [view addSubview:label];
-                return view;
-            }
-        }else {
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 320, 30)];
-            [label setNumberOfLines:0];
-            [label setText:classTitle];
-            [label setFont:[PCFFontFactory droidSansFontWithSize:14]];
-            [label setTextColor:[UIColor whiteColor]];
-            [label setBackgroundColor:[UIColor clearColor]];
-            return label;
-
-        }
-    return nil;
-}
-
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (section == 0 & tableView.tag == 0) {
-        if ([PCFInAppPurchases boughtRemoveAds]) {
-         if ([AdManager sharedInstance].adView.hidden == NO) return 90;
+        if ([PCFInAppPurchases boughtRemoveAds] == NO) {
+         if ([AdManager sharedInstance].adView.hidden == NO) return 20;
             return 10;
         }else {
             return 30;

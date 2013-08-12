@@ -29,6 +29,10 @@ extern BOOL initializedSocket;
 extern UIColor *customBlue;
 
 #define TABLEVIEW_TWO_HEIGHT self.view.bounds.size.height
+#define MINIMUM_CELL_HEIGHT 145
+#define EXPANDED 1
+#define NORMAL 0
+
 @implementation PCFRatingsProfessorViewController
 {
     BOOL isLoading;
@@ -41,7 +45,7 @@ extern UIColor *customBlue;
     NSNumber *totalOverall;
     NSNumber *numReviews;
     NSMutableArray *reviews;
-
+    NSMutableArray *cellState;
 }
 @synthesize tableViewOne,activityIndicator,professorName, tableViewTwo;
 
@@ -109,8 +113,6 @@ extern UIColor *customBlue;
     [super viewDidLoad];
     [self setupBackButton];
     [self loadReviews];
-    self.pageControl = [[UIPageControl alloc] init];
-    [self.pageControl setNumberOfPages:2];
     [self.scrollView setScrollEnabled:NO];
     [self.scrollView setPagingEnabled:YES];
     [self.scrollView setDelegate:self];
@@ -134,7 +136,7 @@ extern UIColor *customBlue;
     
     [tableViewTwo setSectionFooterHeight:0.0f];
     [tableViewOne setScrollEnabled:NO];
-    [tableViewTwo setScrollEnabled:YES];
+//    [tableViewTwo setScrollEnabled:YES];
     [tableViewTwo setDataSource:self];
     [tableViewTwo setDelegate:self];
     [tableViewTwo setTag:2];
@@ -202,9 +204,15 @@ extern UIColor *customBlue;
         [self.tableViewOne reloadData];
         return;
     }
+    
+    cellState = [[NSMutableArray alloc] initWithCapacity:array.count];
+    for (int i = 0; i < array.count; i++) {
+        [cellState addObject:[NSNumber numberWithInt:NORMAL]];
+    }
+    
     for (int i = 0; i < array.count; i++) {
         NSDictionary *results = [array objectAtIndex:i];
-        NSString *name, *date, *message, *course, *term;
+        NSString *name, *date, *message, *course, *term,*identifier;
         NSNumber *helpfulness, *clarity, *easiness, *interestLevel,*bookUse,*overall;
         name = [results objectForKey:@"name"];
         date = [results objectForKey:@"date"];
@@ -217,13 +225,14 @@ extern UIColor *customBlue;
         bookUse = [results objectForKey:@"textbookUse"];
         overall = [results objectForKey:@"overall"];
         term = [results objectForKey:@"term"];
+        identifier = [results objectForKey:@"identifier"];
         NSString *strHelpfulness = [NSString stringWithFormat:@"%d", helpfulness.integerValue];
         NSString *strOverall = [NSString stringWithFormat:@"%d", overall.integerValue];
         NSString *strBookuse = [NSString stringWithFormat:@"%d", bookUse.integerValue];
         NSString *strClarity = [NSString stringWithFormat:@"%d", clarity.integerValue];
         NSString *strInterestLevel = [NSString stringWithFormat:@"%d", interestLevel.integerValue];
         NSString *strEasiness = [NSString stringWithFormat:@"%d", easiness.integerValue];
-        PCFRateModel *obj = [[PCFRateModel alloc] initWithData:name date:date message:message helpfulness:strHelpfulness clarity:strClarity easiness:strEasiness interestLevel:strInterestLevel textbookUse:strBookuse overall:strOverall course:course term:term];
+        PCFRateModel *obj = [[PCFRateModel alloc] initWithData:name date:date message:message helpfulness:strHelpfulness clarity:strClarity easiness:strEasiness interestLevel:strInterestLevel textbookUse:strBookuse overall:strOverall course:course term:term identifier:identifier];
         if (!reviews) reviews = [[NSMutableArray alloc] initWithCapacity:1];
         [reviews addObject:obj];
     }
@@ -238,12 +247,11 @@ extern UIColor *customBlue;
         [label setBackgroundColor:[UIColor clearColor]];
         [view setBackgroundColor:[UIColor clearColor]];
         [view addSubview:label];
-        [self.scrollView setScrollEnabled:YES];
+       // [self.scrollView setScrollEnabled:YES];
         [self.scrollView flashScrollIndicators];
-        //[tableViewTwo setTableFooterView:view];
+        [tableViewTwo setTableFooterView:view];
         [self.tableViewOne reloadData];
         [self.tableViewTwo reloadData];
-        [self scrollToReviews];
 
     }
 }
@@ -359,7 +367,9 @@ extern UIColor *customBlue;
         PCFRateModel *rateObject = [reviews objectAtIndex:indexPath.section];
         UIImageView *imgView = [[UIImageView alloc] initWithFrame:cell.frame];
         [imgView setImage:[UIImage imageNamed:@"1slot2.png"]];
-        [cell setBackgroundView:imgView];
+        //[cell setBackgroundView:imgView];
+        //get picture
+        [cell.profilePicture setProfileID:rateObject.identifier];
         [cell.userName setText:rateObject.username];
         [cell.date setText:rateObject.date];
         [cell.course setText:rateObject.course];
@@ -373,20 +383,66 @@ extern UIColor *customBlue;
                 }
             }
         }
-
-        CGSize size = [rateObject.message sizeWithFont:[PCFFontFactory droidSansFontWithSize:11] constrainedToSize:CGSizeMake(290, 100000)];
-        [cell.comment setFrame:CGRectMake(cell.comment.frame.origin.x, cell.comment.frame.origin.y, size.width, size.height)];
-        [cell.comment setBaselineAdjustment:UIBaselineAdjustmentAlignBaselines];
-        //[cell.comment setPreferredMaxLayoutWidth:290];
-        [cell.comment setLineBreakMode:NSLineBreakByWordWrapping];
+        
+        if ([[cellState objectAtIndex:indexPath.section] integerValue] == NORMAL) {
+            CGSize size = [rateObject.message sizeWithFont:[PCFFontFactory droidSansFontWithSize:11] constrainedToSize:CGSizeMake(290, 100000)];
+            [cell.comment setFrame:CGRectMake(cell.comment.frame.origin.x, cell.comment.frame.origin.y, size.width, size.height)];
+            [cell.comment setBaselineAdjustment:UIBaselineAdjustmentAlignBaselines];
+            //[cell.comment setPreferredMaxLayoutWidth:290];
+            [cell.comment setLineBreakMode:NSLineBreakByWordWrapping];
+        }else {
+            [UIView animateWithDuration:0.4f animations:^{
+                [cell.comment setAlpha:0.0f];
+                [cell.viewReview setAlpha:1.0f];
+            }];
+        }
+    
         [cell.starClarity setBackgroundImage:[self getImageForStars:rateObject.totalClarity] forState:UIControlStateNormal];
         [cell.starEasiness setBackgroundImage:[self getImageForStars:rateObject.totalEasiness] forState:UIControlStateNormal];
         [cell.starHelpfulness setBackgroundImage:[self getImageForStars:rateObject.totalHelpfulness] forState:UIControlStateNormal];
         [cell.starInterestLevel setBackgroundImage:[self getImageForStars:rateObject.totalInterestLevel] forState:UIControlStateNormal];
         [cell.starOverall setBackgroundImage:[self getImageForStars:rateObject.totalOverall] forState:UIControlStateNormal];
         [cell.starTextbookUse setBackgroundImage:[self getImageForStars:rateObject.totalTextbookUse] forState:UIControlStateNormal];
+        
+        UISwipeGestureRecognizer *swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwipedLeft:)];
+        [swipeGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
+        [cell setTag:indexPath.section];
+        UISwipeGestureRecognizer *swipeGestureRecognizerLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwipedRight:)];
+        [swipeGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
+        [cell addGestureRecognizer:swipeGestureRecognizerLeft];
+        [cell addGestureRecognizer:swipeGestureRecognizer];
         return cell;
     }
+}
+
+
+-(void)cellSwipedRight:(UISwipeGestureRecognizer *)gesture
+{
+    if ([[cellState objectAtIndex:[gesture view].tag] integerValue] == EXPANDED) return;
+    [cellState replaceObjectAtIndex:gesture.view.tag withObject:[NSNumber numberWithInt:EXPANDED]];
+    /*[self.tableViewTwo beginUpdates];
+    [self.tableViewTwo reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:gesture.view.tag]] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableViewTwo endUpdates];*/
+    [self.tableViewTwo reloadData];
+    
+}
+
+-(void)cellSwipedLeft:(UISwipeGestureRecognizer *)gesture
+{
+    if ([[cellState objectAtIndex:[gesture view].tag] integerValue] == NORMAL) return;
+        [cellState replaceObjectAtIndex:gesture.view.tag withObject:[NSNumber numberWithInt:NORMAL]];
+    PCFCustomProfessorCommentCell *cell = (PCFCustomProfessorCommentCell*)gesture.view;
+    
+    [UIView animateWithDuration:0.1f animations:^{
+    [cell.comment setAlpha:1.0f];
+    [cell.viewReview setAlpha:0.0f];
+    } completion:^(BOOL finished) {
+        /*[self.tableViewTwo beginUpdates];
+        [self.tableViewTwo reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:gesture.view.tag]] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableViewTwo endUpdates];*/
+        [self.tableViewTwo reloadData];
+    }];
+    
 }
 
 -(UIImage *)getImageForStars:(NSString *)str
@@ -444,6 +500,7 @@ extern UIColor *customBlue;
 -(void)scrollToReviews
 {
     [self.scrollView scrollRectToVisible:CGRectMake(320, 0, self.scrollView.frame.size.width, self.scrollView.frame.size.height) animated:YES];
+    [self.scrollView setScrollEnabled:NO];
 }
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
@@ -452,7 +509,11 @@ extern UIColor *customBlue;
             return  activityIndicator;
         }else if (isLoading == NO) {
             if (isLoadingComments == NO && reviews.count > 0) {
-                return [[UIView alloc] initWithFrame:CGRectZero];
+                UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 10, 30, 30)];
+                [button setTintColor:[UIColor whiteColor]];
+                [button setTitle:@"See Reviews" forState:UIControlStateNormal];
+                [button addTarget:self action:@selector(scrollToReviews) forControlEvents:UIControlEventTouchUpInside];
+                return button;
             }else if (isLoadingComments == YES){
                 UIView *subView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
                 UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(145, 10, 36, 36)];
@@ -481,7 +542,7 @@ extern UIColor *customBlue;
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     if (tableView.tag == 0) {
-        if (isLoadingComments == NO && reviews.count > 0) return self.pageControl.frame.size.height + 5;
+        if (isLoadingComments == NO && reviews.count > 0) return 40;
     }else {
         return 5;
     }
@@ -490,10 +551,12 @@ extern UIColor *customBlue;
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView.tag == 2) {
+        if ([[cellState objectAtIndex:indexPath.section] integerValue] == EXPANDED) return MINIMUM_CELL_HEIGHT;
         PCFRateModel *model = [reviews objectAtIndex:indexPath.section];
         //NSLog(@"%@",model.message);
         CGSize size = [model.message sizeWithFont:[PCFFontFactory droidSansFontWithSize:11]  constrainedToSize:CGSizeMake(290, 100000)];
-            return (93 + size.height + 10);
+            //return MIN(61+10+size.height, MINIMUM_CELL_HEIGHT);
+        return (61+10+size.height);
     }else {
         return tableView.rowHeight;
     }

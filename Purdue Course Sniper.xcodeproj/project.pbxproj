@@ -244,6 +244,8 @@
 		FEDD2FC71719D3DA00BA56E4 /* normal_search.png in Resources */ = {isa = PBXBuildFile; fileRef = FEDD2FC01719D3DA00BA56E4 /* normal_search.png */; };
 		FEDD2FCA1719FACC00BA56E4 /* search_grey.png in Resources */ = {isa = PBXBuildFile; fileRef = FEDD2FC81719FACB00BA56E4 /* search_grey.png */; };
 		FEDD2FCB1719FACC00BA56E4 /* search_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = FEDD2FC91719FACC00BA56E4 /* search_yellow.png */; };
+		FEE0344117B812A4008FE205 /* thumbs_down.png in Resources */ = {isa = PBXBuildFile; fileRef = FEE0343F17B812A4008FE205 /* thumbs_down.png */; };
+		FEE0344217B812A4008FE205 /* thumbs_up.png in Resources */ = {isa = PBXBuildFile; fileRef = FEE0344017B812A4008FE205 /* thumbs_up.png */; };
 		FEE24C7B1651AEE0007C6CDD /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = FEE24C7A1651AEE0007C6CDD /* back.png */; };
 		FEE24C7D1651AEF3007C6CDD /* home.png in Resources */ = {isa = PBXBuildFile; fileRef = FEE24C7C1651AEF3007C6CDD /* home.png */; };
 		FEE24C8716521867007C6CDD /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEE24C8616521867007C6CDD /* MediaPlayer.framework */; };
@@ -602,6 +604,8 @@
 		FEDD2FC01719D3DA00BA56E4 /* normal_search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = normal_search.png; sourceTree = "<group>"; };
 		FEDD2FC81719FACB00BA56E4 /* search_grey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = search_grey.png; sourceTree = "<group>"; };
 		FEDD2FC91719FACC00BA56E4 /* search_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = search_yellow.png; sourceTree = "<group>"; };
+		FEE0343F17B812A4008FE205 /* thumbs_down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = thumbs_down.png; sourceTree = "<group>"; };
+		FEE0344017B812A4008FE205 /* thumbs_up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = thumbs_up.png; sourceTree = "<group>"; };
 		FEE24C7A1651AEE0007C6CDD /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
 		FEE24C7C1651AEF3007C6CDD /* home.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = home.png; path = "Tab Bar Icons/home.png"; sourceTree = "<group>"; };
 		FEE24C8616521867007C6CDD /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -1172,6 +1176,8 @@
 			isa = PBXGroup;
 			children = (
 				FE7154D117A642EB000E1177 /* GoogleAdMobAdapter_MobFoxSDK_iOS_4.1.6.a */,
+				FEE0343F17B812A4008FE205 /* thumbs_down.png */,
+				FEE0344017B812A4008FE205 /* thumbs_up.png */,
 				FE7154CB17A62DC3000E1177 /* MRAID.bundle */,
 				FE7154CD17A63DCE000E1177 /* libAdapterIAd.a */,
 				FE47A060179209E60093027E /* 57x57.png */,
@@ -1509,6 +1515,8 @@
 				FE7154C417A62CD2000E1177 /* Mediation in Resources */,
 				FEEC0DD717AF0ED200BC69FC /* FTUEViewController.xib in Resources */,
 				FEEC0DD917AF18A600BC69FC /* FTUEViewController5.xib in Resources */,
+				FEE0344117B812A4008FE205 /* thumbs_down.png in Resources */,
+				FEE0344217B812A4008FE205 /* thumbs_up.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

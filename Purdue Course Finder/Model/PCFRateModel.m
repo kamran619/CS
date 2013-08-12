@@ -9,9 +9,10 @@
 #import "PCFRateModel.h"
 
 @implementation PCFRateModel
-@synthesize totalClarity,totalEasiness,totalHelpfulness,totalInterestLevel,totalOverall,totalTextbookUse,date,username,message, course, term;
--(id)initWithData:(NSString *)username date:(NSString *)date message:(NSString *)message helpfulness:(NSString *)helpfulness clarity:(NSString *)clarity easiness:(NSString *)easiness interestLevel:(NSString *)interestLevel textbookUse:(NSString *)textbookUse overall:(NSString *)overall course:(NSString *)course term:(NSString *)term
+@synthesize totalClarity,totalEasiness,totalHelpfulness,totalInterestLevel,totalOverall,totalTextbookUse,date,username,message, course, term, identifier;
+-(id)initWithData:(NSString *)username date:(NSString *)date message:(NSString *)message helpfulness:(NSString *)helpfulness clarity:(NSString *)clarity easiness:(NSString *)easiness interestLevel:(NSString *)interestLevel textbookUse:(NSString *)textbookUse overall:(NSString *)overall course:(NSString *)course term:(NSString *)term identifier:(NSString *)identifier
 {
+    self.identifier = identifier;
     self.username = username;
     self.date = date;
     self.message = message;

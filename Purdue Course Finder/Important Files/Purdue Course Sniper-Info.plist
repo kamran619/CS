@@ -7,7 +7,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb 326100727524182</string>
+				<string>fb326100727524182</string>
 			</array>
 		</dict>
 	</array>
@@ -52,7 +52,7 @@
 		<string>DroidSans-Bold.ttf</string>
 	</array>
 	<key>UIMainStoryboardFile~ipad</key>
-	<string>MainStoryboard_iPad</string>
+	<string>MainStoryboard_iPhone</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

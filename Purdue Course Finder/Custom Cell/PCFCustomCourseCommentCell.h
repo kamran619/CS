@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+@class FBProfilePictureView;
 
 @interface PCFCustomCourseCommentCell : UITableViewCell
 @property (nonatomic, strong) IBOutlet UIButton *starEasiness;
@@ -20,4 +21,11 @@
 @property (nonatomic, strong) IBOutlet UILabel *date;
 @property (nonatomic, strong) IBOutlet UILabel *comment;
 @property (nonatomic, strong) IBOutlet UILabel *term;
+
+@property (nonatomic, strong) IBOutlet UIView *viewReview;
+@property (nonatomic, strong) IBOutlet FBProfilePictureView *profilePicture;
+@property (nonatomic, strong) IBOutlet UIButton *thumbsDown;
+@property (nonatomic, strong) IBOutlet UIButton *thumbsUp;
+@property (nonatomic, strong) IBOutlet UILabel *vote;
+
 @end

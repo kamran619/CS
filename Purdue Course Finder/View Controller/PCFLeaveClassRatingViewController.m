@@ -19,6 +19,8 @@
 {
     UITextField *activeTextField;
     PCFCustomSpinner *spinner;
+    NSString *name;
+    NSString *identifier;
 }
 @end
 extern NSOutputStream *outputStream;
@@ -64,6 +66,19 @@ extern BOOL initializedSocket;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    if ([FBSession.activeSession isOpen]) {
+        [[FBRequest requestForMe] startWithCompletionHandler:^(FBRequestConnection *connection, NSDictionary <FBGraphUser> *user, NSError *error) {
+            if (!error) {
+                name = user.name;
+                identifier = user.id;
+            }else {
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"FB ERROR" message:error.description delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alertView show];
+                id delegate = [UIApplication sharedApplication].delegate;
+                [delegate openSession];
+            }
+        }];
+    }
     //[self setupBackButton];
     //register for notifications
     UISwipeGestureRecognizer *swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedUp:)];
@@ -214,7 +229,7 @@ extern BOOL initializedSocket;
     [spinner show];
     dispatch_queue_t task = dispatch_queue_create("Submit Course Review to Server", nil);
     textView.text = [textView.text stringByReplacingOccurrencesOfString:@";" withString:@"*"];
-    NSString *response = [NSString stringWithFormat:@"_SUBMIT_CLASS_REVIEW*%@;%@;%@;%@;%@;%@;%d;%d;%d;%d;%d;%d;\n", course.text, username.text,self.date, professorTextField.text, termTextField.text, textView.text, starEasiness.tag, starFun.tag, starUsefulness.tag, starInterestLevel.tag, starTextbookUse.tag, starOverall.tag];
+    NSString *response = [NSString stringWithFormat:@"_SUBMIT_CLASS_REVIEW*%@;%@;%@;%@;%@;%@;%d;%d;%d;%d;%d;%d;%@\n", course.text, name,self.date, professorTextField.text, termTextField.text, textView.text, starEasiness.tag, starFun.tag, starUsefulness.tag, starInterestLevel.tag, starTextbookUse.tag, starOverall.tag, identifier];
     dispatch_async(task, ^{
         NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
         if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
@@ -231,6 +246,7 @@ extern BOOL initializedSocket;
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
+     if (textField.text.length != 0) [self performSelector:@selector(scrollToProperArea) withObject:nil afterDelay:0.2f];
     return YES;
 }
 
@@ -245,21 +261,26 @@ extern BOOL initializedSocket;
     }else if(location.x >= 4.5 && location.x <= 42) {
         [sender setBackgroundImage:[UIImage imageNamed:@"star-1.png"] forState:UIControlStateNormal];
         [sender setTag:1];
-    }else if(location.x >= 50.5 && location.x <= 89.5) {
+    }else if(location.x >= 50.5 && location.x <= 80.0) {
         [sender setBackgroundImage:[UIImage imageNamed:@"star-2.png"] forState:UIControlStateNormal];
         [sender setTag:2];
-    }else if(location.x >= 98 && location.x <= 135.5) {
+    }else if(location.x >= 80.1 && location.x <= 115.5) {
         [sender setBackgroundImage:[UIImage imageNamed:@"star-3.png"] forState:UIControlStateNormal];
         [sender setTag:3];
-    }else if(location.x >= 143.5 && location.x <= 183.5) {
+    }else if(location.x >= 116.5 && location.x <= 149.5) {
         [sender setBackgroundImage:[UIImage imageNamed:@"star-4.png"] forState:UIControlStateNormal];
         [sender setTag:4];
-    }else if(location.x >= 189.5 && location.x <= 227.5) {
+    }else if(location.x >= 149.6 && location.x <= 180) {
         [sender setBackgroundImage:[UIImage imageNamed:@"star-5.png"] forState:UIControlStateNormal];
         [sender setTag:5];
     }
+    [self performSelector:@selector(scrollToProperArea) withObject:nil afterDelay:0.2f];
 }
 
+-(void)scrollToProperArea
+{
+    [self.scrollView setContentOffset:CGPointMake(320 + (self.pageControl.currentPage*320), 0) animated:YES];
+}
 
 
 - (IBAction)cancelPressed:(id)sender {

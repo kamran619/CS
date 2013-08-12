@@ -14,5 +14,6 @@
 @property (nonatomic, strong) IBOutlet UITableView *tableViewOne;
 @property (nonatomic, strong) UITableView *tableViewTwo;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
 -(void)choooseVC;
 @end

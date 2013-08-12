@@ -1,4 +1,4 @@
-//
+ //
 //  PCFAppDelegate.m
 //  Purdue Course Finder
 //
@@ -343,22 +343,29 @@ NSDictionary *pushInfo = nil;
             }
         }
             break;
-        case FBSessionStateClosed:
+            
         case FBSessionStateClosedLoginFailed:
         {
+            UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"App Disabled" message:@"Your Facebook settings prevent us from working! Open your Settings app, goto the Facebook section and turn ON Course Sniper." delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil, nil];
+            [view show];
+        }
+            
+        case FBSessionStateClosed:
+        {
             [FBSession.activeSession closeAndClearTokenInformation];
-             NSString *deviceType = ([Helpers isPhone5]) ? @"FTUEViewController5" : @"FTUEViewController";
+            NSString *deviceType = ([Helpers isPhone5]) ? @"FTUEViewController5" : @"FTUEViewController";
             FTUEViewController *FTUEVC = [[FTUEViewController alloc] initWithNibName:deviceType bundle:nil];
             UIViewController *topViewController = self.navigationController.topViewController;
             if (![[topViewController modalViewController]
-                 isKindOfClass:[FTUEViewController class]]) {
+                  isKindOfClass:[FTUEViewController class]]) {
                 [topViewController presentViewController:FTUEVC animated:YES completion:nil];
             }
-
+            
             // Once the user has logged in, we want them to
             // be looking at the root view.
             break;
         }
+            
         default:
             break;
     }
