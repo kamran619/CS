@@ -15,7 +15,7 @@
 {
 
 }
-#define SERVER_ADDRESS @"PCW.crabdance.com"
+#define SERVER_ADDRESS @"localhost"//"PCW.crabdance.com"
 //"ec2-23-20-86-127.compute-1.amazonaws.com"//"PCW.crabdance.com"
 ////"10.184.107.32"//@"PCW.crabdance.com"
 #define PORT 12345

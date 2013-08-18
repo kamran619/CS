@@ -10,8 +10,10 @@
 
 @implementation PCFRateModel
 @synthesize totalClarity,totalEasiness,totalHelpfulness,totalInterestLevel,totalOverall,totalTextbookUse,date,username,message, course, term, identifier;
--(id)initWithData:(NSString *)username date:(NSString *)date message:(NSString *)message helpfulness:(NSString *)helpfulness clarity:(NSString *)clarity easiness:(NSString *)easiness interestLevel:(NSString *)interestLevel textbookUse:(NSString *)textbookUse overall:(NSString *)overall course:(NSString *)course term:(NSString *)term identifier:(NSString *)identifier
+-(id)initWithData:(NSString *)username date:(NSString *)date message:(NSString *)message helpfulness:(NSString *)helpfulness clarity:(NSString *)clarity easiness:(NSString *)easiness interestLevel:(NSString *)interestLevel textbookUse:(NSString *)textbookUse overall:(NSString *)overall course:(NSString *)course term:(NSString *)term identifier:(NSString *)identifier likes:(NSString *)likes postIdentifier:(NSString *)postIdentifier
 {
+    self.postIdentifier = postIdentifier;
+    self.likes = likes;
     self.identifier = identifier;
     self.username = username;
     self.date = date;

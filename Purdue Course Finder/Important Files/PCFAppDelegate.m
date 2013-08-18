@@ -55,7 +55,7 @@ NSDictionary *pushInfo = nil;
 
 -(void)setupInAppPurchases
 {
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"REMOVE_ADS_PURCHASED"];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"REMOVE_ADS_PURCHASED"];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"UNLIMITED_TIME_SNIPE_CREDITS_PURCHASED"];
 }
 -(void)customizeUserInterface

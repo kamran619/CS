@@ -31,4 +31,13 @@
 @property (nonatomic, strong) IBOutlet UIButton *thumbsDown;
 @property (nonatomic, strong) IBOutlet UIButton *thumbsUp;
 @property (nonatomic, strong) IBOutlet UILabel *vote;
+
+@property (nonatomic, strong) NSString *postIdentifier;
+-(void)downVoteComment;
+-(void)upVoteComment;
+-(BOOL)checkVote;
+-(void)setupCell;
+-(int)checkUpVoteCount;
+-(int)checkDownVoteCount;
+
 @end

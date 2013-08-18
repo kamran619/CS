@@ -7,6 +7,7 @@
 //
 
 #import "AdManager.h"
+#import "PCFInAppPurchases.h"
 
 @interface AdManager()
 - (CGRect)getRectBeforeAnimationForPlacement:(AdPlacement)placement;
@@ -24,6 +25,7 @@ NSString *const MY_AD_MOB_INTERSTITIAL_APPLICATION_KEY = @"2237354e085a41a7";
 }
 + (instancetype)sharedInstance
 {
+    if ([PCFInAppPurchases boughtRemoveAds] == YES) return nil;
     static AdManager *__sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

@@ -212,8 +212,8 @@ extern UIColor *customBlue;
     
     for (int i = 0; i < array.count; i++) {
         NSDictionary *results = [array objectAtIndex:i];
-        NSString *name, *date, *message, *course, *term,*identifier;
-        NSNumber *helpfulness, *clarity, *easiness, *interestLevel,*bookUse,*overall;
+        NSString *name, *date, *message, *course, *term,*identifier, *postIdentifier;
+        NSNumber *helpfulness, *clarity, *easiness, *interestLevel,*bookUse,*overall, *likes;
         name = [results objectForKey:@"name"];
         date = [results objectForKey:@"date"];
         course = [results objectForKey:@"course"];
@@ -226,13 +226,18 @@ extern UIColor *customBlue;
         overall = [results objectForKey:@"overall"];
         term = [results objectForKey:@"term"];
         identifier = [results objectForKey:@"identifier"];
+        likes = [results objectForKey:@"likes"];
+        postIdentifier = [results objectForKey:@"postIdentifier"];
+        
         NSString *strHelpfulness = [NSString stringWithFormat:@"%d", helpfulness.integerValue];
         NSString *strOverall = [NSString stringWithFormat:@"%d", overall.integerValue];
         NSString *strBookuse = [NSString stringWithFormat:@"%d", bookUse.integerValue];
         NSString *strClarity = [NSString stringWithFormat:@"%d", clarity.integerValue];
         NSString *strInterestLevel = [NSString stringWithFormat:@"%d", interestLevel.integerValue];
         NSString *strEasiness = [NSString stringWithFormat:@"%d", easiness.integerValue];
-        PCFRateModel *obj = [[PCFRateModel alloc] initWithData:name date:date message:message helpfulness:strHelpfulness clarity:strClarity easiness:strEasiness interestLevel:strInterestLevel textbookUse:strBookuse overall:strOverall course:course term:term identifier:identifier];
+        NSString *strLikes = [NSString stringWithFormat:@"%d", likes.integerValue];
+        
+        PCFRateModel *obj = [[PCFRateModel alloc] initWithData:name date:date message:message helpfulness:strHelpfulness clarity:strClarity easiness:strEasiness interestLevel:strInterestLevel textbookUse:strBookuse overall:strOverall course:course term:term identifier:identifier likes:strLikes postIdentifier:postIdentifier];
         if (!reviews) reviews = [[NSMutableArray alloc] initWithCapacity:1];
         [reviews addObject:obj];
     }
@@ -403,7 +408,9 @@ extern UIColor *customBlue;
         [cell.starInterestLevel setBackgroundImage:[self getImageForStars:rateObject.totalInterestLevel] forState:UIControlStateNormal];
         [cell.starOverall setBackgroundImage:[self getImageForStars:rateObject.totalOverall] forState:UIControlStateNormal];
         [cell.starTextbookUse setBackgroundImage:[self getImageForStars:rateObject.totalTextbookUse] forState:UIControlStateNormal];
-        
+        [cell.vote setText:rateObject.likes];
+        cell.postIdentifier = rateObject.postIdentifier;
+        [cell setupCell];
         UISwipeGestureRecognizer *swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwipedLeft:)];
         [swipeGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
         [cell setTag:indexPath.section];

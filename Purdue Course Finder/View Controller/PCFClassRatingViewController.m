@@ -170,7 +170,7 @@ extern NSOutputStream *outputStream;
     
     for (int i = 0; i < data.count; i++) {
         NSDictionary *results = [data objectAtIndex:i];
-        NSString *name, *date, *message, *easiness, *funness, *usefulness, *interestLevel,*bookUse,*overall, *professor, *term, *identifier;
+        NSString *name, *date, *message, *easiness, *funness, *usefulness, *interestLevel,*bookUse,*overall, *professor, *term, *identifier, *likes, *postIdentifier;
         name = [results objectForKey:@"name"];
         date = [results objectForKey:@"date"];
         professor = [results objectForKey:@"professor"];
@@ -183,10 +183,12 @@ extern NSOutputStream *outputStream;
         overall = [results objectForKey:@"overall"];
         term = [results objectForKey:@"term"];
         identifier = [results objectForKey:@"identifier"];
+        likes = [results objectForKey:@"likes"];
+        postIdentifier = [results objectForKey:@"postIdentifier"];
         //putting usefulness in helpfulness spot
         //putting funness in clarity stop
         //putting professor in course spot
-        PCFRateModel *obj = [[PCFRateModel alloc] initWithData:name date:date message:message helpfulness:usefulness clarity:funness easiness:easiness interestLevel:interestLevel textbookUse:bookUse overall:overall course:professor term:term identifier:identifier];
+        PCFRateModel *obj = [[PCFRateModel alloc] initWithData:name date:date message:message helpfulness:usefulness clarity:funness easiness:easiness interestLevel:interestLevel textbookUse:bookUse overall:overall course:professor term:term identifier:identifier likes:likes postIdentifier:postIdentifier];
         if (!courseReviews) courseReviews = [[NSMutableArray alloc] initWithCapacity:1];
         [courseReviews addObject:obj];
 
@@ -340,7 +342,8 @@ extern NSOutputStream *outputStream;
         [cell.starInterestLevel setBackgroundImage:[self getImageForStars:rateObject.totalInterestLevel] forState:UIControlStateNormal];
         [cell.starOverall setBackgroundImage:[self getImageForStars:rateObject.totalOverall] forState:UIControlStateNormal];
         [cell.starTextbookUse setBackgroundImage:[self getImageForStars:rateObject.totalTextbookUse] forState:UIControlStateNormal];
-        
+        [cell.vote setText:rateObject.likes];
+        cell.postIdentifier = rateObject.postIdentifier;
         UISwipeGestureRecognizer *swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwipedLeft:)];
         [swipeGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
         [cell setTag:indexPath.section];

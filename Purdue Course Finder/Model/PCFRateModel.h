@@ -21,7 +21,9 @@
 @property(nonatomic, strong) NSString *message;
 @property(nonatomic, strong) NSString *term;
 @property (nonatomic, strong) NSString *identifier;
+@property (nonatomic, strong) NSString *likes;
+@property (nonatomic, strong) NSString *postIdentifier;
 
--(id)initWithData:(NSString *)username date:(NSString *)date message:(NSString *)message helpfulness:(NSString *)helpfulness clarity:(NSString *)clarity easiness:(NSString *)easiness interestLevel:(NSString *)interestLevel textbookUse:(NSString *)textbookUse overall:(NSString *)overall course:(NSString *)course term:(NSString *)term identifier:(NSString *)identifier;
+-(id)initWithData:(NSString *)username date:(NSString *)date message:(NSString *)message helpfulness:(NSString *)helpfulness clarity:(NSString *)clarity easiness:(NSString *)easiness interestLevel:(NSString *)interestLevel textbookUse:(NSString *)textbookUse overall:(NSString *)overall course:(NSString *)course term:(NSString *)term identifier:(NSString *)identifier likes:(NSString *)likes postIdentifier:(NSString *)postIdentifier;
 
 @end

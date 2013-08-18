@@ -311,7 +311,7 @@ extern BOOL initializedSocket;
                 [spinner dismiss];
                 [PCFAnimationModel animateDown:@"Error communicating with server - please try again. If the problem persists, goto settings and submit a bug report to the developer." view:self color:nil time:0];
             });
-             return;
+            return;
         }
         while (![outputStream hasSpaceAvailable]);
         if ([outputStream hasSpaceAvailable]) {
