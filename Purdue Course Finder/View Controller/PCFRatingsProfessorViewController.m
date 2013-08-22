@@ -19,6 +19,7 @@
 #import "PCFFontFactory.h"
 #import "PCFAnimationModel.h"
 #import "AdManager.h"
+#import "NSDate+RelativeTime.h"
 
 @interface PCFRatingsProfessorViewController ()
 
@@ -376,7 +377,8 @@ extern UIColor *customBlue;
         //get picture
         if (![cell.profilePicture.profileID isEqualToString:rateObject.identifier]) [cell.profilePicture setProfileID:rateObject.identifier];
         [cell.userName setText:rateObject.username];
-        [cell.date setText:rateObject.date];
+        NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970:[rateObject.date intValue]];
+        [cell.date setText:[date stringFromNow]];
         [cell.course setText:rateObject.course];
         [cell.comment setText:rateObject.message];
         [cell.term setText:rateObject.term];

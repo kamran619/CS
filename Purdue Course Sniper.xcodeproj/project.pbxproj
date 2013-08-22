@@ -180,7 +180,6 @@
 		FE6D597516ED165800D7EA94 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE6D591C16ED165800D7EA94 /* Default-568h@2x.png */; };
 		FE7154C317A62CD2000E1177 /* libGoogleAdMobAds.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE7154C117A62CD2000E1177 /* libGoogleAdMobAds.a */; };
 		FE7154C417A62CD2000E1177 /* Mediation in Resources */ = {isa = PBXBuildFile; fileRef = FE7154C217A62CD2000E1177 /* Mediation */; };
-		FE7154CE17A63DCE000E1177 /* libAdapterIAd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE7154CD17A63DCE000E1177 /* libAdapterIAd.a */; };
 		FE7154D217A642EB000E1177 /* GoogleAdMobAdapter_MobFoxSDK_iOS_4.1.6.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE7154D117A642EB000E1177 /* GoogleAdMobAdapter_MobFoxSDK_iOS_4.1.6.a */; };
 		FE7AEC06168226FE00D51A78 /* PCFCustomTermCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AEC05168226FE00D51A78 /* PCFCustomTermCell.m */; };
 		FE7AEC2116823BA600D51A78 /* PCFCustomSearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AEC2016823BA500D51A78 /* PCFCustomSearchCell.m */; };
@@ -189,6 +188,9 @@
 		FE80BD82167B77FD002C726E /* sale.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80BD81167B77FD002C726E /* sale.png */; };
 		FE80BD85167B7A0C002C726E /* PCFSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE80BD84167B7A0B002C726E /* PCFSettingsTableViewController.m */; };
 		FE82C2EB16642B5000890466 /* search2.png in Resources */ = {isa = PBXBuildFile; fileRef = FE82C2EA16642B5000890466 /* search2.png */; };
+		FE8F473B17C65CF00073BF3F /* libAdapterIAd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE8F473917C65CF00073BF3F /* libAdapterIAd.a */; };
+		FE8F473C17C65CF00073BF3F /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = FE8F473A17C65CF00073BF3F /* README.txt */; };
+		FE8F473F17C686D00073BF3F /* NSDate+RelativeTime.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8F473E17C686D00073BF3F /* NSDate+RelativeTime.m */; };
 		FE9AC3FD166F4417001AD835 /* PCFRateView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9AC3FC166F4417001AD835 /* PCFRateView.m */; };
 		FE9B1AAA1650CE6D00906E62 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE9B1AA91650CE6D00906E62 /* StoreKit.framework */; };
 		FEA485361638FE3E00251EC6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEA485351638FE3E00251EC6 /* UIKit.framework */; };
@@ -519,7 +521,6 @@
 		FE7154C117A62CD2000E1177 /* libGoogleAdMobAds.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGoogleAdMobAds.a; path = AdMediator/AdMob/libGoogleAdMobAds.a; sourceTree = "<group>"; };
 		FE7154C217A62CD2000E1177 /* Mediation */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Mediation; path = AdMediator/AdMob/Mediation; sourceTree = "<group>"; };
 		FE7154CB17A62DC3000E1177 /* MRAID.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = MRAID.bundle; path = "Purdue Course Finder/Extra/MRAID.bundle"; sourceTree = "<group>"; };
-		FE7154CD17A63DCE000E1177 /* libAdapterIAd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAdapterIAd.a; path = "../../../../Downloads/LibAdapterIAd-Oct42012/libAdapterIAd.a"; sourceTree = "<group>"; };
 		FE7154D117A642EB000E1177 /* GoogleAdMobAdapter_MobFoxSDK_iOS_4.1.6.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = GoogleAdMobAdapter_MobFoxSDK_iOS_4.1.6.a; sourceTree = "<group>"; };
 		FE7AEC04168226FE00D51A78 /* PCFCustomTermCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFCustomTermCell.h; sourceTree = "<group>"; };
 		FE7AEC05168226FE00D51A78 /* PCFCustomTermCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFCustomTermCell.m; sourceTree = "<group>"; };
@@ -531,6 +532,10 @@
 		FE80BD83167B7A0B002C726E /* PCFSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFSettingsTableViewController.h; sourceTree = "<group>"; };
 		FE80BD84167B7A0B002C726E /* PCFSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFSettingsTableViewController.m; sourceTree = "<group>"; };
 		FE82C2EA16642B5000890466 /* search2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = search2.png; sourceTree = "<group>"; };
+		FE8F473917C65CF00073BF3F /* libAdapterIAd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libAdapterIAd.a; sourceTree = "<group>"; };
+		FE8F473A17C65CF00073BF3F /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		FE8F473D17C686D00073BF3F /* NSDate+RelativeTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RelativeTime.h"; sourceTree = "<group>"; };
+		FE8F473E17C686D00073BF3F /* NSDate+RelativeTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RelativeTime.m"; sourceTree = "<group>"; };
 		FE9AC3FB166F4417001AD835 /* PCFRateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFRateView.h; sourceTree = "<group>"; };
 		FE9AC3FC166F4417001AD835 /* PCFRateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFRateView.m; sourceTree = "<group>"; };
 		FE9B1AA71650CDA700906E62 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -632,7 +637,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FEF35E4217AF2A29004F4BF9 /* AdSupport.framework in Frameworks */,
-				FE7154CE17A63DCE000E1177 /* libAdapterIAd.a in Frameworks */,
 				FE5E19DD1742D7FD00A07824 /* Security.framework in Frameworks */,
 				FED05FCC17389A1D004BB8F5 /* Accelerate.framework in Frameworks */,
 				FEE24C8716521867007C6CDD /* MediaPlayer.framework in Frameworks */,
@@ -658,6 +662,7 @@
 				FE7154C317A62CD2000E1177 /* libGoogleAdMobAds.a in Frameworks */,
 				FE7154D217A642EB000E1177 /* GoogleAdMobAdapter_MobFoxSDK_iOS_4.1.6.a in Frameworks */,
 				FEF35E4117AF29DE004F4BF9 /* FacebookSDK.framework in Frameworks */,
+				FE8F473B17C65CF00073BF3F /* libAdapterIAd.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1000,6 +1005,8 @@
 		FE61AF2D1650B6EF00E4ED98 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FE8F473D17C686D00073BF3F /* NSDate+RelativeTime.h */,
+				FE8F473E17C686D00073BF3F /* NSDate+RelativeTime.m */,
 				FE2F2F28179CB5C50083C218 /* AdManager.m */,
 				FE2F2F27179CB5C50083C218 /* AdManager.h */,
 				FE5E19D71742D5C800A07824 /* Reachability.m */,
@@ -1172,6 +1179,15 @@
 			name = MobFox;
 			sourceTree = "<group>";
 		};
+		FE8F473817C65CF00073BF3F /* LibAdapterIAd-Oct42012 */ = {
+			isa = PBXGroup;
+			children = (
+				FE8F473917C65CF00073BF3F /* libAdapterIAd.a */,
+				FE8F473A17C65CF00073BF3F /* README.txt */,
+			);
+			path = "LibAdapterIAd-Oct42012";
+			sourceTree = "<group>";
+		};
 		FEA485261638FE3E00251EC6 = {
 			isa = PBXGroup;
 			children = (
@@ -1179,8 +1195,8 @@
 				FEE0343F17B812A4008FE205 /* thumbs_down.png */,
 				FEE0344017B812A4008FE205 /* thumbs_up.png */,
 				FE7154CB17A62DC3000E1177 /* MRAID.bundle */,
-				FE7154CD17A63DCE000E1177 /* libAdapterIAd.a */,
 				FE47A060179209E60093027E /* 57x57.png */,
+				FE8F473817C65CF00073BF3F /* LibAdapterIAd-Oct42012 */,
 				FE47A061179209E60093027E /* 114x114.png */,
 				FE47A062179209E60093027E /* Default-568h@2x.png */,
 				FE47A063179209E60093027E /* Default.png */,
@@ -1517,6 +1533,7 @@
 				FEEC0DD917AF18A600BC69FC /* FTUEViewController5.xib in Resources */,
 				FEE0344117B812A4008FE205 /* thumbs_down.png in Resources */,
 				FEE0344217B812A4008FE205 /* thumbs_up.png in Resources */,
+				FE8F473C17C65CF00073BF3F /* README.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1594,6 +1611,7 @@
 				FE2F2F29179CB5C50083C218 /* AdManager.m in Sources */,
 				FEEC0DD117AF0B6700BC69FC /* Helpers.m in Sources */,
 				FEEC0DD617AF0ED200BC69FC /* FTUEViewController.m in Sources */,
+				FE8F473F17C686D00073BF3F /* NSDate+RelativeTime.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1713,6 +1731,7 @@
 					"\"$(SRCROOT)/Purdue Course Finder/Extra/AdMediator/AdMob\"",
 					"\"$(SRCROOT)/../../../../Downloads/LibAdapterIAd-Oct42012\"",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/LibAdapterIAd-Oct42012\"",
 				);
 				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1749,6 +1768,7 @@
 					"\"$(SRCROOT)/Purdue Course Finder/Extra/AdMediator/AdMob\"",
 					"\"$(SRCROOT)/../../../../Downloads/LibAdapterIAd-Oct42012\"",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/LibAdapterIAd-Oct42012\"",
 				);
 				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

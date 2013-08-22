@@ -18,7 +18,7 @@
 #import "PCFInAppPurchases.h"
 #include "PCFFontFactory.h"
 #include "AdManager.h"
-
+#include "NSDate+RelativeTime.h"
 @interface PCFClassRatingViewController ()
 {
     BOOL isLoading;
@@ -312,7 +312,8 @@ extern NSOutputStream *outputStream;
         PCFRateModel *rateObject = [courseReviews objectAtIndex:indexPath.section];
         if (![cell.profilePicture.profileID isEqualToString:rateObject.identifier]) [cell.profilePicture setProfileID:rateObject.identifier];
         [cell.userName setText:rateObject.username];
-        [cell.date setText:rateObject.date];
+        NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970:[rateObject.date intValue]];
+        [cell.date setText:[date stringFromDate:date]];
         [cell.professor setText:rateObject.course];
         [cell.comment setText:rateObject.message];
         [cell.term setText:rateObject.term];
