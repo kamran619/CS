@@ -94,9 +94,6 @@ extern BOOL initializedSocket;
     //[dateFormat setDateFormat:@"yyyy-MM-dd"];
     //NSDateFormatter *timeFormat = [[NSDateFormatter alloc] init];
     //[timeFormat setDateFormat:@"HH:mm:ss"];
-    NSString *time = [NSString stringWithFormat:@"%d", (int)[date timeIntervalSince1970]];
-    //time = [time stringByAppendingString:[NSString stringWithFormat:@" %@",[timeFormat stringFromDate:date]]];
-    self.date = time;
     self.course.text = courseTitle;
     [self.navigationItem setTitle:self.courseName];
     self.textView.layer.cornerRadius = 8.0;
@@ -228,8 +225,12 @@ extern BOOL initializedSocket;
         //[view show];
         return;
     }
+    
     spinner = [[PCFCustomSpinner alloc] initWithFrame:CGRectMake(0, 0, 275, 200) :@"Submitting review..."];
     [spinner show];
+    NSString *time = [NSString stringWithFormat:@"%d", (int)[[NSDate date] timeIntervalSince1970]];
+    //time = [time stringByAppendingString:[NSString stringWithFormat:@" %@",[timeFormat stringFromDate:date]]];
+    self.date = time;
     dispatch_queue_t task = dispatch_queue_create("Submit Course Review to Server", nil);
     textView.text = [textView.text stringByReplacingOccurrencesOfString:@";" withString:@"*"];
     NSString *response = [NSString stringWithFormat:@"_SUBMIT_CLASS_REVIEW*%@;%@;%@;%@;%@;%@;%d;%d;%d;%d;%d;%d;%@\n", course.text, name,self.date, professorTextField.text, termTextField.text, textView.text, starEasiness.tag, starFun.tag, starUsefulness.tag, starInterestLevel.tag, starTextbookUse.tag, starOverall.tag, identifier];

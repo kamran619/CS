@@ -325,7 +325,7 @@ NSDictionary *pushInfo = nil;
 #pragma mark FB Interaction
 -(void) openSession
 {
-    [FBSession openActiveSessionWithReadPermissions:[NSArray arrayWithObjects:@"user_about_me",@"friends_about_me",@"friends_education_history", nil] allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+    [FBSession openActiveSessionWithReadPermissions:[NSArray arrayWithObjects:@"user_education_history",@"friends_about_me",@"friends_education_history", nil] allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
         [self sessionStateChanged:session state:status error:error];
     }];
 }

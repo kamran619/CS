@@ -152,16 +152,6 @@ extern BOOL initializedSocket;
                                                object:nil];
      */
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePostResponse:) name:@"ReviewResponseReceived" object:nil];
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardDidShowNotification object:nil];
-     //   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-	NSDate *date = [NSDate date];
-    //NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    //[dateFormat setDateFormat:@"yyyy-MM-dd"];
-    //NSDateFormatter *timeFormat = [[NSDateFormatter alloc] init];
-    //[timeFormat setDateFormat:@"HH:mm:ss"];
-    NSString *time = [NSString stringWithFormat:@"%d",(int)[date timeIntervalSince1970]];
-    //time = [time stringByAppendingString:[NSString stringWithFormat:@" %@",[timeFormat stringFromDate:date]]];
-    currentDate = time;
     self.professor.text = profName;
     self.textView.layer.cornerRadius = 8.0;
     self.textView.layer.borderColor = [[UIColor grayColor] CGColor];
@@ -302,6 +292,9 @@ extern BOOL initializedSocket;
         [self checkIfLoggedIn];
         return;
     }
+    NSDate *date = [NSDate date];
+    NSString *time = [NSString stringWithFormat:@"%d",(int)[date timeIntervalSince1970]];
+    currentDate = time;
     NSString *response = [NSString stringWithFormat:@"_SUBMIT_PROFESSOR_REVIEW*%@;%@;%@;%d;%d;%d;%d;%d;%d;%@;%@;%@;%@\n", name,currentDate,textView.text,starEasiness.tag,starClarity.tag,starHelpfulness.tag,starInterestLevel.tag,starTextbookUse.tag,starOverall.tag, textField.text, professor.text, termTextField.text, identifier];
     dispatch_async(task, ^{
         NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];

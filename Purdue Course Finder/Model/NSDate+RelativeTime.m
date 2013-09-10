@@ -21,6 +21,7 @@ const int kYears = 52 * kWeeks;
 {
     NSTimeInterval timeDifference = [date timeIntervalSinceDate:self];
     NSString *relativeTimeString = nil;
+    int actualTime;
     
     if (timeDifference < kMinutes) {
         //number of seconds
@@ -30,9 +31,11 @@ const int kYears = 52 * kWeeks;
     }else if (timeDifference < kDays) {
         relativeTimeString = [NSString stringWithFormat:@"%dh ago", (int)(timeDifference/kHours)];
     }else if (timeDifference < kWeeks) {
-        relativeTimeString = [NSString stringWithFormat:@"%d days ago", (int)(timeDifference/kDays)];
+        actualTime = (int)(timeDifference/kDays);
+        relativeTimeString = [NSString stringWithFormat:@"%d %@ ago", actualTime, (actualTime == 1) ? @"day" : @"days"];
     }else if (timeDifference < kYears) {
-        relativeTimeString = [NSString stringWithFormat:@"%d weeks ago", (int)(timeDifference/kWeeks)];
+        actualTime = (int)(timeDifference/kWeeks);
+        relativeTimeString = [NSString stringWithFormat:@"%d %@ ago", actualTime, (actualTime == 1) ? @"week" : @"weeks"];
     }else {
         relativeTimeString = [NSString stringWithFormat:@"%dy ago", (int)(timeDifference/kYears)];
     }
