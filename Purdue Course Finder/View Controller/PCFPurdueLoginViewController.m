@@ -105,6 +105,11 @@ extern BOOL internetActive;
 }
 -(void)homePressed:(id)sender
 {
+    NSHTTPCookie *cookie;
+    NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (cookie in [cookieJar cookies]) {
+        NSLog(@"%@", cookie);
+    }
     [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://wl.mypurdue.purdue.edu/cp/home/loginf"]]];
 }
 -(void)webViewDidStartLoad:(UIWebView *)webView

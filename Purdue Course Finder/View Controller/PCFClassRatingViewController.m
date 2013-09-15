@@ -182,8 +182,8 @@ extern NSOutputStream *outputStream;
         bookUse = [results objectForKey:@"textbookUse"];
         overall = [results objectForKey:@"overall"];
         term = [results objectForKey:@"term"];
-        identifier = [results objectForKey:@"identifier"];
-        likes = [results objectForKey:@"likes"];
+        identifier = [NSString stringWithFormat:@"%@", [results objectForKey:@"identifier"]];
+        likes = [NSString stringWithFormat:@"%@", [results objectForKey:@"likes"]];
         postIdentifier = [results objectForKey:@"postIdentifier"];
         //putting usefulness in helpfulness spot
         //putting funness in clarity stop
