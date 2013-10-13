@@ -14,6 +14,7 @@
 #import "PCFAnimationModel.h"
 #import "AdManager.h"
 #import "PCFInAppPurchases.h"
+#import "PCFNetworkManager.h"
 
 @interface PCFLeaveClassRatingViewController ()
 {
@@ -23,8 +24,6 @@
     NSString *identifier;
 }
 @end
-extern NSOutputStream *outputStream;
-extern BOOL initializedSocket;
 @implementation PCFLeaveClassRatingViewController
 @synthesize backButton,scrollView,starEasiness,starFun,starInterestLevel,starOverall,starTextbookUse,starUsefulness,submitButton,date,courseName,course,courseTitle,username,professorTextField,termTextField,textView;
 -(void)swipedUp:(UISwipeGestureRecognizer *)recognizer
@@ -236,10 +235,10 @@ extern BOOL initializedSocket;
     NSString *response = [NSString stringWithFormat:@"_SUBMIT_CLASS_REVIEW*%@;%@;%@;%@;%@;%@;%d;%d;%d;%d;%d;%d;%@\n", course.text, name,self.date, professorTextField.text, termTextField.text, textView.text, starEasiness.tag, starFun.tag, starUsefulness.tag, starInterestLevel.tag, starTextbookUse.tag, starOverall.tag, identifier];
     dispatch_async(task, ^{
         NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
-        if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
-        while (![outputStream hasSpaceAvailable]);
-        if ([outputStream hasSpaceAvailable]) {
-            [outputStream write:[data bytes] maxLength:[data length]];
+        if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+        while (![[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]);
+        if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
+            [[PCFNetworkManager sharedInstance].outputStream write:[data bytes] maxLength:[data length]];
         }
     });
     

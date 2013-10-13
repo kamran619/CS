@@ -193,6 +193,7 @@
 		FE8F473F17C686D00073BF3F /* NSDate+RelativeTime.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8F473E17C686D00073BF3F /* NSDate+RelativeTime.m */; };
 		FE9AC3FD166F4417001AD835 /* PCFRateView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9AC3FC166F4417001AD835 /* PCFRateView.m */; };
 		FE9B1AAA1650CE6D00906E62 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE9B1AA91650CE6D00906E62 /* StoreKit.framework */; };
+		FEA3E15E180A4B7200471425 /* PCFNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA3E15D180A4B7200471425 /* PCFNetworkManager.m */; };
 		FEA485361638FE3E00251EC6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEA485351638FE3E00251EC6 /* UIKit.framework */; };
 		FEA485381638FE3E00251EC6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEA485371638FE3E00251EC6 /* Foundation.framework */; };
 		FEA4853A1638FE3E00251EC6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEA485391638FE3E00251EC6 /* CoreGraphics.framework */; };
@@ -540,6 +541,8 @@
 		FE9AC3FC166F4417001AD835 /* PCFRateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFRateView.m; sourceTree = "<group>"; };
 		FE9B1AA71650CDA700906E62 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		FE9B1AA91650CE6D00906E62 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		FEA3E15C180A4B7200471425 /* PCFNetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFNetworkManager.h; sourceTree = "<group>"; };
+		FEA3E15D180A4B7200471425 /* PCFNetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFNetworkManager.m; sourceTree = "<group>"; };
 		FEA485311638FE3E00251EC6 /* Course Sniper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Course Sniper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEA485351638FE3E00251EC6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FEA485371638FE3E00251EC6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1005,6 +1008,8 @@
 		FE61AF2D1650B6EF00E4ED98 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FEA3E15C180A4B7200471425 /* PCFNetworkManager.h */,
+				FEA3E15D180A4B7200471425 /* PCFNetworkManager.m */,
 				FE8F473D17C686D00073BF3F /* NSDate+RelativeTime.h */,
 				FE8F473E17C686D00073BF3F /* NSDate+RelativeTime.m */,
 				FE2F2F28179CB5C50083C218 /* AdManager.m */,
@@ -1555,6 +1560,7 @@
 				FE61AF731650B6EF00E4ED98 /* PCFTimeModel.m in Sources */,
 				FE61AF741650B6EF00E4ED98 /* PCFWebModel.m in Sources */,
 				FE61AF761650B6EF00E4ED98 /* PCFChooseClassTableViewController.m in Sources */,
+				FEA3E15E180A4B7200471425 /* PCFNetworkManager.m in Sources */,
 				FE61AF771650B6EF00E4ED98 /* PCFClassTableViewController.m in Sources */,
 				FE61AF781650B6EF00E4ED98 /* PCFCourseCatalogViewController.m in Sources */,
 				FE61AF7A1650B6EF00E4ED98 /* PCFFavoritesViewController.m in Sources */,

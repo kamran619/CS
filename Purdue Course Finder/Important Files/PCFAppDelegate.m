@@ -19,16 +19,13 @@
 #import "AppFlood.h"
 #import "FTUEViewController.h"
 #import "Helpers.h"
-
+#import "PCFNetworkManager.h"
 
 #define IS_WIDESCREEN ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
 #define IS_IPHONE ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPhone" ] )
 #define IS_IPOD   ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPod touch" ] )
 
-//global variables
-NSInputStream *inputStream;
-NSOutputStream *outputStream;
-BOOL initializedSocket = NO;
+
 NSString *const kFileName = @"PCFData.bin";
 NSString *finalTermValue = @"";
 NSString *finalClassValue = @"";
@@ -40,7 +37,6 @@ NSMutableArray *watchingClasses = nil;
 NSMutableArray *serverAnnouncements = nil;
 NSMutableArray *professors = nil;
 NSMutableArray *arraySubjects = nil;
-BOOL internetActive = NO;
 UIColor *customBlue = nil;
 UIColor *customGreen = nil;
 UIColor *customYellow = nil;
@@ -77,9 +73,12 @@ NSDictionary *pushInfo = nil;
     customBlue = [UIColor colorWithRed:0.141176 green:0.431373 blue:0.611765 alpha:1];
     [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObject:[PCFFontFactory droidSansBoldFontWithSize:18]forKey:UITextAttributeFont]];
 }
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self customizeUserInterface];
+    //start network manager
+    PCFNetworkManager *mgr = [PCFNetworkManager sharedInstance];
     [AppFlood initializeWithId:@"8f98lJyqIT2HawiM" key:@"PLG6kmCwb2fL51929ee5" adType:4];
     int appCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"appCount"];
     //increment app count
@@ -273,20 +272,20 @@ NSDictionary *pushInfo = nil;
     }
         //close connection
     
-    if (outputStream) {
-        if ([outputStream hasSpaceAvailable]) {
+    if ([[PCFNetworkManager sharedInstance] outputStream]) {
+        if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
             dispatch_queue_t task = dispatch_queue_create("Close Connection", nil);
             NSString *str = @"_CLOSE_CONNECTION*\n";
             NSData *dataToSend = [[NSData alloc] initWithData:[str dataUsingEncoding:NSUTF8StringEncoding]];
             dispatch_async(task, ^{
-                [outputStream write:[dataToSend bytes] maxLength:[dataToSend length]];
-                [inputStream close];
-                [outputStream close];
-                inputStream = nil;
-                outputStream = nil;
-                [inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-                [outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-                initializedSocket = NO;
+                [[[PCFNetworkManager sharedInstance] outputStream] write:[dataToSend bytes] maxLength:[dataToSend length]];
+                [[[PCFNetworkManager sharedInstance] inputStream] close];
+                [[[PCFNetworkManager sharedInstance] outputStream] close];
+                [PCFNetworkManager sharedInstance].inputStream = nil;
+                [PCFNetworkManager sharedInstance].outputStream = nil;
+                [[[PCFNetworkManager sharedInstance] inputStream] removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+                [[[PCFNetworkManager sharedInstance] outputStream] removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+                [PCFNetworkManager sharedInstance].initializedSocket = NO;
             });
         }
     }
@@ -314,7 +313,7 @@ NSDictionary *pushInfo = nil;
     [[NSUserDefaults standardUserDefaults] setInteger:++appCount forKey:@"appCount"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     application.applicationIconBadgeNumber = 0;
-    if (initializedSocket == NO) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+    if ([PCFNetworkManager sharedInstance].initializedSocket == NO) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

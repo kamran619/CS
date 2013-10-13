@@ -27,18 +27,16 @@
 #import "PCFFontFactory.h"
 #import "PCFRatingsProfessorViewController.h"
 #import "PCFClassRatingViewController.h"
+#import "PCFNetworkManager.h"
+
 @interface PCFFavoritesViewController ()
 {
     NSInteger selectedSection;
 }
 @end
 
-extern NSInputStream *inputStream;
-extern NSOutputStream *outputStream;
-extern BOOL initializedSocket;
 extern BOOL launchedWithPushNotification;
 extern NSDictionary *pushInfo;
-extern BOOL internetActive;
 extern UIColor *customBlue;
 extern NSString *catalogLink;
 extern NSString *catalogNumber;
@@ -231,10 +229,10 @@ extern BOOL isDoneWithSchedule;
     [super viewWillAppear:YES];
     [self.navigationController.navigationItem setTitle:@"Favorites"];
     [[self tableView] reloadData];
-    if (internetActive == NO) {
+    if ([PCFNetworkManager sharedInstance].internetActive == NO) {
         [PCFAnimationModel animateDown:@"You do not have an active internet connection." view:self color:[UIColor redColor] time:0];
     }
-    if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+    if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -685,9 +683,9 @@ extern BOOL isDoneWithSchedule;
             NSData *dataToSend = [[NSData alloc] initWithData:[str dataUsingEncoding:NSUTF8StringEncoding]];
             dispatch_queue_t task = dispatch_queue_create("Send Class Data", nil);
             dispatch_async(task, ^{
-                if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
-                if ([outputStream hasSpaceAvailable]) {
-                    [outputStream write:[dataToSend bytes] maxLength:[dataToSend length]];
+                if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+                if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
+                    [[PCFNetworkManager sharedInstance].outputStream write:[dataToSend bytes] maxLength:[dataToSend length]];
                 }else {
                             dispatch_async(dispatch_get_main_queue(), ^{
                             [cell.snipeactivityIndicator stopAnimating];
@@ -708,9 +706,9 @@ extern BOOL isDoneWithSchedule;
             NSData *dataToSend = [[NSData alloc] initWithData:[str dataUsingEncoding:NSUTF8StringEncoding]];
             dispatch_queue_t task = dispatch_queue_create("Send Class Data", nil);
             dispatch_async(task, ^{
-                if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
-                if ([outputStream hasSpaceAvailable]) {
-                    [outputStream write:[dataToSend bytes] maxLength:[dataToSend length]];
+                if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+                if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
+                    [[PCFNetworkManager sharedInstance].outputStream write:[dataToSend bytes] maxLength:[dataToSend length]];
                 }else {
                             dispatch_async(dispatch_get_main_queue(), ^{
                             [cell.snipeactivityIndicator stopAnimating];

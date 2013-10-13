@@ -34,9 +34,10 @@
 #import "PCFSchedueModel.h"
 #import "KBKeyboardHandler.h"
 #import "AdManager.h"
+#import "PCFNetworkManager.h"
 
 extern BOOL launchedWithPushNotification;
-extern BOOL internetActive;
+
 extern NSMutableArray *arraySubjects;
 extern UIColor *customBlue;
 extern UIColor *customYellow;
@@ -57,7 +58,7 @@ extern NSString *finalTermDescription;
 extern NSString *finalTermValue;
 extern NSString *finalClassValue;
 extern NSString *finalCRNValue;
-extern BOOL internetActive;
+;
 NSArray *classesOffered = nil;
 
 @implementation PCFMainSearchTableViewController
@@ -165,30 +166,8 @@ NSArray *classesOffered = nil;
      selector:@selector(subjValueChanged:)
      name:@"subjChanged"
      object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkNetworkStatus:) name:kReachabilityChangedNotification object:nil];
     [chooseTerm addTarget:self action:@selector(chooseOption:) forControlEvents:UIControlEventTouchUpInside];
     
-    internetReachable = [Reachability reachabilityForInternetConnection];
-    [internetReachable startNotifier];
-    NetworkStatus internetStatus = [internetReachable currentReachabilityStatus];
-    switch (internetStatus)
-    {
-        case NotReachable:
-        {
-            internetActive = NO;
-            break;
-        }
-        case ReachableViaWiFi:
-        {
-            internetActive = YES;
-            break;
-        }
-        case ReachableViaWWAN:
-        {
-            internetActive = YES;
-            break;
-        }
-    }
 }
 
 -(IBAction)customBarTapped:(id)sender
@@ -436,31 +415,6 @@ NSArray *classesOffered = nil;
     }
 }
 
--(void) checkNetworkStatus:(NSNotification *)notice
-{
-    // called after network status changes
-    NetworkStatus internetStatus = [internetReachable currentReachabilityStatus];
-    switch (internetStatus)
-    {
-        case NotReachable:
-        {
-            NSLog(@"The internet is down.");
-            internetActive = NO;
-            break;
-        }
-        case ReachableViaWiFi:
-        {
-            NSLog(@"The internet is working via WIFI.");
-            internetActive = YES;
-        }
-        case ReachableViaWWAN:
-        {
-            NSLog(@"The internet is working via WWAN.");
-            internetActive = YES;
-            break;
-        }
-    }
-}
 
 -(void)clickedYesOnTwoButton
 {
@@ -469,7 +423,7 @@ NSArray *classesOffered = nil;
 
 - (void)search {
     NSLog(@"search button is %f and %f\n", buttonSearch.frame.origin.x,buttonSearch.frame.origin.y);
-    if (internetActive == NO) {
+    if ([PCFNetworkManager sharedInstance].internetActive == NO) {
         [PCFAnimationModel animateDown:@"You do not have an active internet connection." view:self color:[UIColor redColor] time:0];
     }
     //preliminary check
@@ -587,6 +541,10 @@ NSArray *classesOffered = nil;
         }
         NSString *cTitle = textFieldCourseTitle.text;
         NSString *courseNumber = textFieldCourseNumber.text;
+        NSString *fromHours = @"";
+        NSString *toHours = @"";
+        if (!cTitle) cTitle = @"";
+        if (!courseNumber) courseNumber = @"";
         //buttons
         UIButton *monday = buttonMonday;
         UIButton *tuesday = buttonTuesday;
@@ -632,9 +590,15 @@ NSArray *classesOffered = nil;
                 day = [day stringByAppendingString:@"&sel_day=u"];
             }
             
-            queryString = [NSString stringWithFormat:@"term_in=%@&sel_subj=dummy&sel_day=dummy&sel_schd=dummy&sel_insm=dummy&sel_camp=dummy&sel_levl=dummy&sel_sess=dummy&sel_instr=dummy&sel_ptrm=dummy&sel_attr=dummy&sel_subj=%@&sel_crse=%@&sel_title=%@&sel_schd=%%25&sel_from_cred=%@&sel_to_cred=%@&sel_camp=%%25&sel_ptrm=%%25&sel_instr=%@&sel_sess=%%25&sel_attr=%%25&begin_hh=0&begin_mi=0&begin_ap=a&end_hh=0&end_mi=0&end_ap=a%@", finalTermValue, subject, courseNumber,cTitle, textFieldRangeFrom.text, textFieldRangeTo.text,profValue, day];
+            fromHours = textFieldRangeFrom.text;
+            toHours = textFieldRangeTo.text;
+            if (textFieldRangeFrom.text.length != 0) fromHours = textFieldRangeFrom.text;
+            if (textFieldRangeTo.text != 0) toHours = textFieldRangeTo.text;
+            
+            
+            queryString = [NSString stringWithFormat:@"term_in=%@&sel_subj=dummy&sel_day=dummy&sel_schd=dummy&sel_insm=dummy&sel_camp=dummy&sel_levl=dummy&sel_sess=dummy&sel_instr=dummy&sel_ptrm=dummy&sel_attr=dummy&sel_subj=%@&sel_crse=%@&sel_title=%@&sel_schd=%%25&sel_from_cred=%@&sel_to_cred=%@&sel_camp=%%25&sel_ptrm=%%25&sel_instr=%@&sel_sess=%%25&sel_attr=%%25&begin_hh=0&begin_mi=0&begin_ap=a&end_hh=0&end_mi=0&end_ap=a%@", finalTermValue, subject, courseNumber,cTitle, fromHours, toHours,profValue, day];
         }else {
-            queryString = [NSString stringWithFormat:@"term_in=%@&sel_subj=dummy&sel_day=dummy&sel_schd=dummy&sel_insm=dummy&sel_camp=dummy&sel_levl=dummy&sel_sess=dummy&sel_instr=dummy&sel_ptrm=dummy&sel_attr=dummy&sel_subj=%@&sel_crse=%@&sel_title=%@&sel_schd=%%25&sel_from_cred=%@&sel_to_cred=%@&sel_camp=%%25&sel_ptrm=%%25&sel_instr=%@&sel_sess=%%25&sel_attr=%%25&begin_hh=0&begin_mi=0&begin_ap=a&end_hh=0&end_mi=0&end_ap=a", finalTermValue, subject, courseNumber,cTitle,textFieldRangeFrom.text, textFieldRangeTo.text, profValue];
+            queryString = [NSString stringWithFormat:@"term_in=%@&sel_subj=dummy&sel_day=dummy&sel_schd=dummy&sel_insm=dummy&sel_camp=dummy&sel_levl=dummy&sel_sess=dummy&sel_instr=dummy&sel_ptrm=dummy&sel_attr=dummy&sel_subj=%@&sel_crse=%@&sel_title=%@&sel_schd=%%25&sel_from_cred=%@&sel_to_cred=%@&sel_camp=%%25&sel_ptrm=%%25&sel_instr=%@&sel_sess=%%25&sel_attr=%%25&begin_hh=0&begin_mi=0&begin_ap=a&end_hh=0&end_mi=0&end_ap=a", finalTermValue, subject, courseNumber,cTitle, fromHours, toHours, profValue];
         }
         [self queryServer:queryString];
     }
@@ -649,7 +613,7 @@ NSArray *classesOffered = nil;
 
 -(IBAction)searchPressed:(id)sender
 {
-    if (internetActive == NO) {
+    if ([PCFNetworkManager sharedInstance].internetActive == NO) {
         //CGRect frame = CGRectMake(0 ,355, 320, 40);
         [PCFAnimationModel animateDown:@"The internet is down." view:self color:[UIColor redColor] time:0];
     }else if (textFieldSearch.text.length == 0) {
@@ -697,7 +661,7 @@ NSArray *classesOffered = nil;
 - (void)queryServer:(NSString *)queryString  {
     __block PCFCustomSpinner *spinner = [[PCFCustomSpinner alloc] initWithFrame:CGRectMake(0, 0, 200, 200):@"Searching.." window:self.view.window];
     [spinner show];
-    NSString *url = @"https://selfservice.mypurdue.purdue.edu/prod/bwckschd.p_get_crse_unsec";
+    NSString *url = @"https://selfservice.mypurdue.purdue.edu/prod/bwckschd.p_get_crse_unsec";//@"https://selfservice.mypurdue.purdue.edu/prod/bwckctlg.p_display_courses";
     NSString *referer = @"https://selfservice.mypurdue.purdue.edu/prod/bwckgens.p_proc_term_date";
     dispatch_queue_t task = dispatch_queue_create("Task 3", nil);
     dispatch_async(task, ^{
@@ -942,7 +906,7 @@ NSArray *classesOffered = nil;
  }
 
 - (IBAction)chooseOption:(id)sender {
-    if (internetActive == NO) {
+    if ([PCFNetworkManager sharedInstance].internetActive == NO) {
             [PCFAnimationModel animateDown:@"The internet is down." view:self color:[UIColor redColor] time:0];
     }else {
         if ([sender tag] == 0) {

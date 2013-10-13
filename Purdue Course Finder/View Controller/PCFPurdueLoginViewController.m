@@ -14,7 +14,7 @@
 #import "Reachability.h"
 #import "PCFInAppPurchases.h"
 #import "AdManager.h"
-
+#import "PCFNetworkManager.h"
 @interface PCFPurdueLoginViewController ()
 {
     Reachability *internetReachable;
@@ -23,7 +23,6 @@
 
 @implementation PCFPurdueLoginViewController
 @synthesize webView, activityIndicator,back,forward,refresh,home;
-extern BOOL internetActive;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -114,7 +113,7 @@ extern BOOL internetActive;
 }
 -(void)webViewDidStartLoad:(UIWebView *)webView
 {
-    if (internetActive == NO) {
+    if ([PCFNetworkManager sharedInstance].internetActive == NO) {
         [webView setHidden:YES];
         [[self activityIndicator] stopAnimating];
     }else {

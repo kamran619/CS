@@ -34,7 +34,6 @@
 NSString *catalogLink = @"junk";
 NSString *catalogTitle = @"junk";
 NSString *catalogNumber = @"junk";
-extern BOOL internetActive;
 extern BOOL isDoneWithSchedule;
 extern NSArray *modelArray;
 extern NSMutableArray *savedResults;

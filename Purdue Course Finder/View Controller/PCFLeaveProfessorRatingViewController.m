@@ -15,6 +15,8 @@
 #import "KBKeyboardHandler.h"
 #import "PCFInAppPurchases.h"
 #import "AdManager.h"
+#import "PCFNetworkManager.h"
+
 
 @interface PCFLeaveProfessorRatingViewController ()
 {
@@ -24,8 +26,6 @@
 
 @end
 
-extern NSOutputStream *outputStream;
-extern BOOL initializedSocket;
 @implementation PCFLeaveProfessorRatingViewController
 {
     PCFCustomSpinner *spinner;
@@ -298,17 +298,17 @@ extern BOOL initializedSocket;
     NSString *response = [NSString stringWithFormat:@"_SUBMIT_PROFESSOR_REVIEW*%@;%@;%@;%d;%d;%d;%d;%d;%d;%@;%@;%@;%@\n", name,currentDate,textView.text,starEasiness.tag,starClarity.tag,starHelpfulness.tag,starInterestLevel.tag,starTextbookUse.tag,starOverall.tag, textField.text, professor.text, termTextField.text, identifier];
     dispatch_async(task, ^{
         NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
-        if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
-        if (outputStream.streamStatus != NSStreamStatusOpen) {
+        if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+        if ([PCFNetworkManager sharedInstance].outputStream.streamStatus != NSStreamStatusOpen) {
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [spinner dismiss];
                 [PCFAnimationModel animateDown:@"Error communicating with server - please try again. If the problem persists, goto settings and submit a bug report to the developer." view:self color:nil time:0];
             });
             return;
         }
-        while (![outputStream hasSpaceAvailable]);
-        if ([outputStream hasSpaceAvailable]) {
-            [outputStream write:[data bytes] maxLength:[data length]];
+        while (![[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]);
+        if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
+            [[PCFNetworkManager sharedInstance].outputStream write:[data bytes] maxLength:[data length]];
         }
     });
 

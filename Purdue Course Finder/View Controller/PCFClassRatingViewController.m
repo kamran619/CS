@@ -18,6 +18,7 @@
 #import "PCFInAppPurchases.h"
 #include "PCFFontFactory.h"
 #include "AdManager.h"
+#import "PCFNetworkManager.h"
 #include "NSDate+RelativeTime.h"
 @interface PCFClassRatingViewController ()
 {
@@ -41,8 +42,6 @@
 #define NORMAL 0
 
 extern UIColor *customBlue;
-extern BOOL initializedSocket;
-extern NSOutputStream *outputStream;
 @implementation PCFClassRatingViewController
 @synthesize tableViewOne,tableViewTwo,classTitle,activityIndicator,classNumber;
 
@@ -217,10 +216,10 @@ extern NSOutputStream *outputStream;
     dispatch_async(task, ^{
         NSString *dataToSend = [NSString stringWithFormat:@"_COMPLETE_CLASS_RATING*%@\n", classTitle];
         NSData *data = [dataToSend dataUsingEncoding:NSUTF8StringEncoding];
-        if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
-        while (![outputStream hasSpaceAvailable]);
-        if ([outputStream hasSpaceAvailable]) {
-            [outputStream write:[data bytes] maxLength:[data length]];
+        if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+        while (![[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]);
+        if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
+            [[PCFNetworkManager sharedInstance].outputStream write:[data bytes] maxLength:[data length]];
         }
     });
     
@@ -231,10 +230,10 @@ extern NSOutputStream *outputStream;
     dispatch_async(task, ^{
         NSString *dataToSend = [NSString stringWithFormat:@"_COMPLETE_CLASS_COMMENTS*%@\n", classTitle];
         NSData *data = [dataToSend dataUsingEncoding:NSUTF8StringEncoding];
-        if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
-        while (![outputStream hasSpaceAvailable]);
-        if ([outputStream hasSpaceAvailable]) {
-            [outputStream write:[data bytes] maxLength:[data length]];
+        if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+        while (![[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]);
+        if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
+            [[PCFNetworkManager sharedInstance].outputStream write:[data bytes] maxLength:[data length]];
         }
     });
     
@@ -344,6 +343,7 @@ extern NSOutputStream *outputStream;
         [cell.starOverall setBackgroundImage:[self getImageForStars:rateObject.totalOverall] forState:UIControlStateNormal];
         [cell.starTextbookUse setBackgroundImage:[self getImageForStars:rateObject.totalTextbookUse] forState:UIControlStateNormal];
         [cell.vote setText:rateObject.likes];
+        [cell.date setText:[date stringFromNow]];
         cell.postIdentifier = rateObject.postIdentifier;
         UISwipeGestureRecognizer *swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwipedLeft:)];
         [swipeGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];

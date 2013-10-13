@@ -11,10 +11,10 @@
 #import "PCFClassModel.h"
 #import "PCFCourseRecord.h"
 #import "PCFAppDelegate.h"
+#import "PCFNetworkManager.h"
 
 @implementation PCFWebModel
 
-extern BOOL internetActive;
 extern NSString *finalTermValue;
 @synthesize listOfClasses;
 
@@ -36,7 +36,7 @@ extern NSString *finalTermValue;
         if ([error code] == -1001) {
             NSLog(@"Retrying\n");
         }else if ([error code] == -1009) {
-            internetActive = NO;
+            [PCFNetworkManager sharedInstance].internetActive = NO;
             return @"No internet connection";
         }else if (error){
             NSLog(@"%@\n", [error description]);

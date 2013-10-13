@@ -8,10 +8,8 @@
 
 #import "PCFCustomCourseCommentCell.h"
 #import "PCFAppDelegate.h"
+#import "PCFNetworkManager.h"
 
-extern BOOL initializedSocket;
-extern NSInputStream *inputStream;
-extern NSOutputStream *outputStream;
 #define VOTE_IDENTIFIER [NSString stringWithFormat:@"CLASS_VOTE_IDENTIFIER_%@", self.postIdentifier]
 
 @implementation PCFCustomCourseCommentCell
@@ -42,8 +40,8 @@ extern NSOutputStream *outputStream;
         dispatch_async(task, ^{
             NSString *dataToSend = [NSString stringWithFormat:@"_CLASS_LIKE_DOWNVOTE*%@*%d\n", self.postIdentifier, self.checkDownVoteCount];
             NSData *data = [dataToSend dataUsingEncoding:NSUTF8StringEncoding];
-            if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
-            if (outputStream.streamStatus != NSStreamStatusOpen) {
+            if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+            if ([PCFNetworkManager sharedInstance].outputStream.streamStatus != NSStreamStatusOpen) {
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     //[PCFAnimationModel animateDown:@"Error communicating with server - please try again. If the problem persists, goto settings and submit a bug report to the developer." view:self color:nil time:0];
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The network connection was not open" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
@@ -51,9 +49,9 @@ extern NSOutputStream *outputStream;
                 });
                 return;
             }
-            while (![outputStream hasSpaceAvailable]);
-            if ([outputStream hasSpaceAvailable]) {
-                [outputStream write:[data bytes] maxLength:[data length]];
+            while (![[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]);
+            if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
+                [[PCFNetworkManager sharedInstance].outputStream write:[data bytes] maxLength:[data length]];
                 int vote = [self.vote.text intValue];
                 vote-= self.checkDownVoteCount;
                 [[NSUserDefaults standardUserDefaults] setObject:@"DOWN" forKey:VOTE_IDENTIFIER];
@@ -75,8 +73,8 @@ extern NSOutputStream *outputStream;
         dispatch_async(task, ^{
             NSString *dataToSend = [NSString stringWithFormat:@"_CLASS__LIKE_UPVOTE*%@*%d\n", self.postIdentifier, self.checkUpVoteCount];
             NSData *data = [dataToSend dataUsingEncoding:NSUTF8StringEncoding];
-            if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
-            if (outputStream.streamStatus != NSStreamStatusOpen) {
+            if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+            if ([PCFNetworkManager sharedInstance].outputStream.streamStatus != NSStreamStatusOpen) {
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The network connection was not open" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
                     [alertView show];
@@ -84,9 +82,9 @@ extern NSOutputStream *outputStream;
                 });
                 return;
             }
-            while (![outputStream hasSpaceAvailable]);
-            if ([outputStream hasSpaceAvailable]) {
-                [outputStream write:[data bytes] maxLength:[data length]];
+            while (![[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]);
+            if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
+                [[PCFNetworkManager sharedInstance].outputStream write:[data bytes] maxLength:[data length]];
             }
             int vote = [self.vote.text intValue];
             vote+= self.checkDownVoteCount;

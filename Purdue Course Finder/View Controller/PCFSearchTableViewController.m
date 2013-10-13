@@ -19,6 +19,7 @@
 #import "PCFCustomSearchCell.h"
 #import "PCFFontFactory.h"
 #import "AdManager.h"
+#import "PCFNetworkManager.h"
 
 @interface PCFSearchTableViewController ()
 {
@@ -26,7 +27,6 @@
 }
 @end
 extern UIColor *customBlue;
-BOOL internetActive;
 NSArray *arrayProfessors;
 extern NSMutableArray *arraySubjects;
 extern NSString *finalTermValue;

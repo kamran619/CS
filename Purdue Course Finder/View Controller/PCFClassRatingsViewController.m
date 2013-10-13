@@ -18,6 +18,7 @@
 #import "PCFClassRatingViewController.h"
 #import "PCFAnimationModel.h"
 #import "AdManager.h"
+#import "PCFNetworkManager.h"
 
 @interface PCFClassRatingsViewController ()
 {
@@ -28,8 +29,6 @@
 
 @implementation PCFClassRatingsViewController
 extern UIColor *customBlue;
-extern NSOutputStream *outputStream;
-extern BOOL initializedSocket;
 @synthesize tableView, searchBar, searchResults;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -242,9 +241,9 @@ extern BOOL initializedSocket;
     dispatch_async(task, ^{
         NSString *dataToSend = [NSString stringWithFormat:@"_CLASS_RATING*%@\n", cell.courseName.text];
         NSData *data = [dataToSend dataUsingEncoding:NSUTF8StringEncoding];
-        if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
-        if ([outputStream hasSpaceAvailable]) {
-            [outputStream write:[data bytes] maxLength:[data length]];
+        if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+        if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
+            [[PCFNetworkManager sharedInstance].outputStream write:[data bytes] maxLength:[data length]];
         }
     });
     UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.tableView.frame];

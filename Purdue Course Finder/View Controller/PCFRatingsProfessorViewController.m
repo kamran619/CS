@@ -20,13 +20,12 @@
 #import "PCFAnimationModel.h"
 #import "AdManager.h"
 #import "NSDate+RelativeTime.h"
+#import "PCFNetworkManager.h"
 
 @interface PCFRatingsProfessorViewController ()
 
 @end
 
-extern NSOutputStream *outputStream;
-extern BOOL initializedSocket;
 extern UIColor *customBlue;
 
 #define TABLEVIEW_TWO_HEIGHT self.view.bounds.size.height
@@ -268,16 +267,16 @@ extern UIColor *customBlue;
     dispatch_async(task, ^{
         NSString *dataToSend = [NSString stringWithFormat:@"_COMPLETE_PROFESSOR_RATING*%@\n", professorName];
         NSData *data = [dataToSend dataUsingEncoding:NSUTF8StringEncoding];
-        if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
-        if (outputStream.streamStatus != NSStreamStatusOpen) {
+        if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+        if ([PCFNetworkManager sharedInstance].outputStream.streamStatus != NSStreamStatusOpen) {
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [PCFAnimationModel animateDown:@"Error communicating with server - please try again. If the problem persists, goto settings and submit a bug report to the developer." view:self color:nil time:0];
             });
             return;
         }
-        while (![outputStream hasSpaceAvailable]);
-        if ([outputStream hasSpaceAvailable]) {
-            [outputStream write:[data bytes] maxLength:[data length]];
+        while (![[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]);
+        if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
+            [[PCFNetworkManager sharedInstance].outputStream write:[data bytes] maxLength:[data length]];
         }
     });
 
@@ -290,17 +289,17 @@ extern UIColor *customBlue;
     dispatch_async(task, ^{
         NSString *dataToSend = [NSString stringWithFormat:@"_COMPLETE_PROFESSOR_COMMENTS*%@\n", professorName];
         NSData *data = [dataToSend dataUsingEncoding:NSUTF8StringEncoding];
-        if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
-        if (outputStream.streamStatus != NSStreamStatusOpen) {
+        if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+        if ([PCFNetworkManager sharedInstance].outputStream.streamStatus != NSStreamStatusOpen) {
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [PCFAnimationModel animateDown:@"Error communicating with server - please try again. If the problem persists, goto settings and submit a bug report to the developer." view:self color:nil time:0];
             });
             return;
         }
 
-        while (![outputStream hasSpaceAvailable]);
-        if ([outputStream hasSpaceAvailable]) {
-            [outputStream write:[data bytes] maxLength:[data length]];
+        while (![[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]);
+        if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
+            [[PCFNetworkManager sharedInstance].outputStream write:[data bytes] maxLength:[data length]];
         }
     });
 

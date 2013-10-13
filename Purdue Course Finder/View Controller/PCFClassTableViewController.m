@@ -25,7 +25,6 @@
 }
 @end
 
-extern BOOL internetActive;
 extern NSString *finalClassValue;
 extern NSString *finalTermValue;
 extern NSString *finalTermDescription;

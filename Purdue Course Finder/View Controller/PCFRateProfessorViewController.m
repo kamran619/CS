@@ -15,9 +15,8 @@
 #import "PCFCustomAlertViewTwoButtons.h"
 #import "PCFInAppPurchases.h"
 #import "AdManager.h"
+#import "PCFNetworkManager.h"
 
-extern BOOL initializedSocket;
-extern NSOutputStream *outputStream;
 extern NSMutableArray *professors;
 
 @implementation PCFRateProfessorViewController
@@ -269,9 +268,9 @@ extern NSMutableArray *professors;
     dispatch_async(task, ^{
         NSString *dataToSend = [NSString stringWithFormat:@"_PROFESSOR_RATING*%@\n", cell.title.text];
         NSData *data = [dataToSend dataUsingEncoding:NSUTF8StringEncoding];
-        if (!initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
-        if ([outputStream hasSpaceAvailable]) {
-            [outputStream write:[data bytes] maxLength:[data length]];
+        if (![PCFNetworkManager sharedInstance].initializedSocket) [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"connectToServer" object:nil]];
+        if ([[PCFNetworkManager sharedInstance].outputStream hasSpaceAvailable]) {
+            [[PCFNetworkManager sharedInstance].outputStream write:[data bytes] maxLength:[data length]];
         }
     });
     UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.tableView.frame];
